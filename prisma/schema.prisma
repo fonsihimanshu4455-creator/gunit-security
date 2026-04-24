@@ -3,7 +3,10 @@
 // and update DATABASE_URL in env.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // `native` for local dev, `rhel-openssl-3.0.x` for Vercel serverless
+  // (AWS Lambda / Amazon Linux 2023 with Node 20+).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
