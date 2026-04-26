@@ -60,7 +60,8 @@ export default async function TeamMembersPage() {
                         alt={m.name}
                         width={40}
                         height={40}
-                        className="rounded-full object-cover"
+                        unoptimized
+                        className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-primary to-blue-primary flex items-center justify-center font-display text-xs tracking-widest">

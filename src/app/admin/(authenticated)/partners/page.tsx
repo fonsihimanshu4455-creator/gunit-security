@@ -45,7 +45,14 @@ export default async function PartnersPage() {
                   <td className="px-4 py-3 text-gray-mid">{p.order}</td>
                   <td className="px-4 py-3">
                     {p.logoUrl ? (
-                      <Image src={p.logoUrl} alt={p.name} width={48} height={48} className="rounded object-contain bg-navy-deep" />
+                      <Image
+                        src={p.logoUrl}
+                        alt={p.name}
+                        width={48}
+                        height={48}
+                        unoptimized
+                        className="w-12 h-12 rounded object-contain bg-navy-deep"
+                      />
                     ) : (
                       <span className="text-gray-dark text-xs">—</span>
                     )}

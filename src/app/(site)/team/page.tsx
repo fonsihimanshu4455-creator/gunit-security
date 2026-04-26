@@ -71,7 +71,8 @@ export default async function TeamPage() {
                         alt={member.name}
                         width={72}
                         height={72}
-                        className="rounded-full object-cover border border-navy-light"
+                        unoptimized
+                        className="w-[72px] h-[72px] rounded-full object-cover border border-navy-light"
                       />
                     ) : (
                       <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-red-primary to-blue-primary flex items-center justify-center font-display text-xl tracking-widest flex-shrink-0">

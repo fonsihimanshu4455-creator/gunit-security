@@ -43,7 +43,8 @@ export function TeamPreview({ team }: { team: TeamMember[] }) {
                     alt={member.name}
                     width={88}
                     height={88}
-                    className="rounded-full object-cover border border-navy-light"
+                    unoptimized
+                    className="w-[88px] h-[88px] rounded-full object-cover border border-navy-light"
                   />
                 ) : (
                   <div className="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-red-primary to-blue-primary flex items-center justify-center font-display text-2xl tracking-widest">
