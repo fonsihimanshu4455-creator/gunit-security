@@ -511,6 +511,67 @@ async function main() {
     }
   }
 
+  // ─────────────────────────────────────────────────────────────────
+  // 10. One-time data migrations
+  // ─────────────────────────────────────────────────────────────────
+  // The first round of seed data didn't match the latest brief: Mandeep
+  // and Mandy are the same person (use Mandy), and Ali is the Event
+  // Manager (not Business Development). These migrations run on every
+  // deploy but are idempotent — once the data is in the new shape, the
+  // findFirst lookups return nothing and the updates skip.
+  // Importantly, they preserve any photoUrl an admin uploaded.
+
+  // Drop the standalone "Mandy" stub row if it still exists.
+  const mandyStub = await prisma.teamMember.findFirst({
+    where: { name: "Mandy", role: "Client Services Manager" },
+  });
+  if (mandyStub) {
+    await prisma.teamMember.delete({ where: { id: mandyStub.id } });
+  }
+
+  // Merge Mandeep Sehrawat into Mandy (keeps photoUrl, just changes
+  // name/role/bio/responsibilities).
+  const mandeepRow = await prisma.teamMember.findFirst({
+    where: { name: "Mandeep Sehrawat" },
+  });
+  if (mandeepRow) {
+    await prisma.teamMember.update({
+      where: { id: mandeepRow.id },
+      data: {
+        name: "Mandy",
+        role: "Operations Manager",
+        email: "mandy.s@gunitsecurity.com.au",
+        bio:
+          "Mandy ensures the smooth delivery of security services through strong supervision, planning, and operational control. She is also the primary point of contact for client services and relationship management.",
+        responsibilities: [
+          { title: "Operations Oversight", description: "Managing day-to-day operations for efficiency and quality." },
+          { title: "Team Leadership", description: "Leading and mentoring teams to deliver high performance." },
+          { title: "Client Services", description: "Primary point of contact for clients and ongoing relationship management." },
+        ],
+      },
+    });
+  }
+
+  // Update Ali Shehzad's role from Business Development Director → Event Manager.
+  const aliRow = await prisma.teamMember.findFirst({
+    where: { name: "Ali Shehzad", role: "Business Development Director" },
+  });
+  if (aliRow) {
+    await prisma.teamMember.update({
+      where: { id: aliRow.id },
+      data: {
+        role: "Event Manager",
+        bio:
+          "Ali leads event security operations — planning, coordinating, and on-the-ground delivery for licensed venues, corporate functions, and large-scale gatherings.",
+        responsibilities: [
+          { title: "Event Planning", description: "End-to-end planning for crowd-control and venue contracts." },
+          { title: "On-Site Leadership", description: "Coordinating teams during live events to keep patrons safe." },
+          { title: "Client Liaison", description: "Single point of contact for event organisers before and during shifts." },
+        ],
+      },
+    });
+  }
+
   console.log("Seed complete.");
   console.log(`Admin login: ${adminEmail} / (from DEFAULT_ADMIN_PASSWORD)`);
 }
