@@ -11,6 +11,7 @@ import {
   HeartHandshake,
   Image as ImageIcon,
   Handshake,
+  Users,
   Inbox,
   Briefcase,
 } from "lucide-react";
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { href: "/admin/core-values", label: "Core Values", icon: HeartHandshake },
   { href: "/admin/hero-slides", label: "Hero Slides", icon: ImageIcon },
+  { href: "/admin/team-members", label: "Team Members", icon: Users },
   { href: "/admin/partners", label: "Partners", icon: Handshake },
   { href: "/admin/submissions", label: "Contact Inbox", icon: Inbox },
   { href: "/admin/applications", label: "Career Applications", icon: Briefcase },

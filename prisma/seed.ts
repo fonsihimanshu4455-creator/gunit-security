@@ -4,12 +4,13 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Default admin user.
+  // ─────────────────────────────────────────────────────────────────
+  // 1. Default admin user
+  // ─────────────────────────────────────────────────────────────────
   // We overwrite the password hash on every seed so changing
   // DEFAULT_ADMIN_PASSWORD in Vercel env vars actually takes effect on
   // redeploy. Trade-off: until there's an in-app password-change page,
-  // a deploy will overwrite any manual hash change. That's fine for
-  // now — bootstrap > niceties.
+  // a deploy will overwrite any manual hash change.
   const adminEmail = process.env.DEFAULT_ADMIN_EMAIL ?? "admin@gunitsecurity.com.au";
   const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD ?? "ChangeMe123!";
   const passwordHash = await bcrypt.hash(adminPassword, 12);
@@ -25,156 +26,444 @@ async function main() {
     },
   });
 
-  // 2. Site settings — single row
+  // ─────────────────────────────────────────────────────────────────
+  // 2. Site settings (single row — upsert by first existing id)
+  // ─────────────────────────────────────────────────────────────────
+  const settingsData = {
+    companyName: "G-Unit Security",
+    tagline: "Your Security, Our Mission",
+    subtitle: "We Don't Mind 24/7 Communication",
+    description:
+      "G-Unit Security is a privately owned Western Australian company focused on delivering dependable, professional, and structured security solutions across Perth and its environs.",
+    phone: "0490 331 894",
+    email: "dario.m@gunitsecurity.com.au",
+    generalEmail: "info@gunitsecurity.com.au",
+    address: "36 Brisbane Street, Perth WA 6000",
+    hours: "24/7 Emergency Response",
+    website: "www.gunitsecurity.com.au",
+    established: "2024",
+    region: "Western Australia",
+    emergencyResponse: "24/7",
+  };
   const existingSettings = await prisma.siteSettings.findFirst();
-  if (!existingSettings) {
-    await prisma.siteSettings.create({
-      data: {
-        companyName: "G Unit Security",
-        tagline: "Perth's Premier Security Services",
-        phone: "+61 426 842 606",
-        email: "info@gunitsecurity.com.au",
-        address: "PO BOX 254, Mirrabooka, WA 6941",
-        hours: "24/7 Emergency Response | Office Mon–Fri 9AM–6PM",
-      },
-    });
+  if (existingSettings) {
+    await prisma.siteSettings.update({ where: { id: existingSettings.id }, data: settingsData });
+  } else {
+    await prisma.siteSettings.create({ data: settingsData });
   }
 
-  // 3. Services (8)
+  // ─────────────────────────────────────────────────────────────────
+  // 3. Services (8) — destructive replace so old slugs are removed
+  // ─────────────────────────────────────────────────────────────────
+  await prisma.service.deleteMany({});
   const services = [
     {
-      slug: "vip-protection",
-      title: "VIP Protection",
-      shortDesc: "Discreet, elite protection for high-profile individuals. Officers double as drivers and personal aides with total confidentiality.",
+      slug: "commercial-guarding",
+      title: "Commercial Guarding",
+      shortDesc:
+        "Professional security personnel for corporate buildings, ensuring first-class customer service and high behavioural standards.",
       longDesc:
-        "Our VIP Protection service delivers elite close protection for high-profile individuals, executives, celebrities, and dignitaries. Every officer is rigorously trained in threat assessment, defensive driving, and close-quarter protection. We operate with total discretion — officers blend seamlessly into your environment while maintaining complete situational awareness. 100% confidentiality is guaranteed.",
+        "In corporate settings, security personnel are often the first contact for tenants, contractors, and visitors. Officers must demonstrate strong communication, professional presentation, and customer service skills.",
+      icon: "Building2",
+      order: 1,
+      features: [
+        "Site supervisors",
+        "Control room operators",
+        "Rover patrol officers",
+        "Concierge security officers",
+        "Loading dock controllers",
+        "Mailroom security support",
+        "Access control officers",
+      ],
+    },
+    {
+      slug: "healthcare-security",
+      title: "Healthcare Security",
+      shortDesc:
+        "Specialised security for healthcare facilities — calm communication, empathy, and patient safety.",
+      longDesc:
+        "Healthcare facilities require officers who balance security with professionalism, empathy, and clear communication. Our personnel work in sensitive environments while maintaining safety for patients, staff, and visitors.",
+      icon: "HeartPulse",
+      order: 2,
+      features: [
+        "Calm communication",
+        "Professional behaviour",
+        "Situational awareness",
+        "Patient escort services",
+        "Access control",
+        "Infrastructure checks",
+        "Loading dock control",
+      ],
+    },
+    {
+      slug: "retail-warehousing-logistics",
+      title: "Retail, Warehousing & Logistics",
+      shortDesc:
+        "Strict procedural compliance with strong customer awareness for retail and logistics environments.",
+      longDesc:
+        "Retail and logistics environments demand strict procedural compliance. Officers maintain efficiency while ensuring security compliance within time-sensitive logistics operations.",
+      icon: "Warehouse",
+      order: 3,
+      features: [
+        "Site supervisors",
+        "Gatehouse officers",
+        "Security system monitoring",
+        "Key holding",
+        "Perimeter patrols",
+        "Visitor checks",
+        "Alarm response",
+        "Dispatch verification",
+        "Loss prevention officers",
+        "Car park patrol officers",
+      ],
+    },
+    {
+      slug: "construction-site-security",
+      title: "Construction Site Security",
+      shortDesc:
+        "Reduce theft risk, prevent unauthorised access, maintain site control on high-value construction sites.",
+      longDesc:
+        "Construction sites are high-risk due to valuable equipment and open access. Our services are designed to reduce theft risk, prevent unauthorised access, and maintain site control.",
+      icon: "HardHat",
+      order: 4,
+      features: [
+        "Static guarding",
+        "Mobile patrols",
+        "Access control",
+        "Visitor verification",
+        "Vehicle entry control",
+        "Welfare checks",
+        "After-hours monitoring",
+      ],
+    },
+    {
+      slug: "crowd-control-event-security",
+      title: "Crowd Control & Event Security",
+      shortDesc:
+        "Licensed crowd control officers managing events with a customer-focused approach.",
+      longDesc:
+        "We offer licensed crowd control officers trained to manage environments professionally with a customer-focused approach. Support for licensed venues, corporate functions, private and community events.",
+      icon: "Users",
+      order: 5,
+      features: [
+        "Licensed venues",
+        "Corporate functions",
+        "Private events",
+        "Community events",
+        "Emergency event coverage",
+        "Risk prevention",
+        "Professional engagement",
+        "Incident management",
+        "Safe crowd movement",
+      ],
+    },
+    {
+      slug: "mobile-patrols-alarm-response",
+      title: "Mobile Patrols & Alarm Response",
+      shortDesc:
+        "Flexible, cost-effective security solution for sites outside operational hours.",
+      longDesc:
+        "Mobile patrols offer a flexible, cost-effective solution for site security outside operational hours. Tailored to client risk exposure with structured reporting for accountability.",
+      icon: "Car",
+      order: 6,
+      features: [
+        "Lock and unlock services",
+        "Infrastructure checks",
+        "Perimeter inspections",
+        "Hazard identification",
+        "Welfare checks",
+        "Incident reporting",
+      ],
+    },
+    {
+      slug: "cctv-monitoring-support",
+      title: "CCTV Monitoring Support",
+      shortDesc:
+        "Technology-supported security with real-time monitoring and rapid response coordination.",
+      longDesc:
+        "Modern security operations rely on technology-supported service delivery. Our CCTV monitoring support provides incident reporting, workforce coordination, and service accountability.",
+      icon: "Camera",
+      order: 7,
+      features: [
+        "Real-time monitoring",
+        "Incident reporting",
+        "Communication tracking",
+        "Service accountability",
+        "Digital reporting",
+        "Operational communication",
+      ],
+    },
+    {
+      slug: "vip-asset-protection",
+      title: "VIP & Asset Protection",
+      shortDesc: "Discreet, professional protection for high-value individuals and assets.",
+      longDesc:
+        "Specialised VIP protection and asset security services with risk assessment and discreet professional officers.",
       icon: "Shield",
+      order: 8,
+      features: [
+        "Discreet protection",
+        "Asset transit security",
+        "Risk assessment",
+        "Personal security details",
+        "Event protection",
+        "24/7 availability",
+      ],
+    },
+  ];
+  for (const s of services) {
+    await prisma.service.create({ data: s });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // 4. Industries (6) — destructive replace
+  // ─────────────────────────────────────────────────────────────────
+  await prisma.industry.deleteMany({});
+  const industries = [
+    {
+      slug: "commercial-corporate",
+      title: "Commercial & Corporate Buildings",
+      description:
+        "Site supervisors, concierge, and access control for offices and corporate facilities.",
+      icon: "Building",
       order: 1,
     },
     {
-      slug: "crowd-control",
-      title: "Crowd Control",
-      shortDesc: "Events from 50 to 30,000 patrons. Distinctly uniformed, fully-insured professionals monitoring patron behaviour.",
-      longDesc:
-        "From intimate private events to stadium-scale concerts, our Crowd Control teams manage gatherings of up to 30,000 patrons. Our distinctly uniformed, fully-licensed officers monitor patron behaviour, enforce entry controls, manage queues, and coordinate emergency response. We work closely with event organisers, venue managers, and WA Police to deliver safe, well-managed events.",
-      icon: "Users",
+      slug: "healthcare",
+      title: "Healthcare Facilities",
+      description: "Empathetic, calm security officers for hospitals and medical centres.",
+      icon: "HeartPulse",
       order: 2,
     },
     {
-      slug: "cctv-monitoring",
-      title: "CCTV Monitoring",
-      shortDesc: "Complete installation, monitoring, and servicing. Electronic surveillance that deters threats and responds in real time.",
-      longDesc:
-        "End-to-end CCTV solutions — from site assessment and installation to 24/7 remote monitoring and ongoing servicing. Our systems use HD and 4K cameras, night vision, motion analytics, and real-time alerts. Our monitoring centre operates round-the-clock, reviewing footage, flagging incidents, and dispatching mobile patrols when threats are detected.",
-      icon: "Camera",
+      slug: "retail-logistics",
+      title: "Retail & Logistics",
+      description: "Loss prevention, warehouse security, and dispatch verification.",
+      icon: "ShoppingBag",
       order: 3,
     },
     {
-      slug: "mobile-patrols",
-      title: "Mobile Patrols",
-      shortDesc: "High-visibility patrols protecting property and assets. Alarm response, lock-up checks, and emergency services coordination.",
-      longDesc:
-        "Our Mobile Patrol units provide high-visibility deterrence across Perth and surrounding suburbs. Services include random property patrols, alarm response, lock-up and open-up checks, vacant property inspections, and coordination with WA Police during emergencies. Each patrol vehicle is GPS-tracked with full digital reporting for every visit.",
-      icon: "Car",
+      slug: "construction",
+      title: "Construction Sites",
+      description: "Theft prevention, access control, and after-hours monitoring.",
+      icon: "HardHat",
       order: 4,
     },
     {
-      slug: "financial-escorts",
-      title: "Financial Escorts",
-      shortDesc: "Secure transport for currency, documents, and valuables. High-visibility presence deterring threats during transit.",
-      longDesc:
-        "Secure armed and unarmed escort services for cash-in-transit, sensitive documents, jewellery, and high-value assets. Our escort teams plan routes, coordinate with financial institutions, and use high-visibility uniforms and marked vehicles to deter threats. Full insurance coverage on all escorts.",
-      icon: "Banknote",
+      slug: "events-venues",
+      title: "Licensed Venues & Events",
+      description: "Crowd control, corporate functions, and emergency event coverage.",
+      icon: "Users",
       order: 5,
     },
     {
-      slug: "canine-security",
-      title: "Canine Security",
-      shortDesc: "Trained security dogs with handlers providing exceptional deterrence. Effective for large areas and high-risk environments.",
-      longDesc:
-        "Highly trained patrol and detection dogs paired with certified handlers. Ideal for warehouse complexes, construction sites, large event perimeters, and high-risk environments where a single officer cannot cover the area alone. Our canine teams provide unmatched deterrence and detection capability.",
-      icon: "Dog",
+      slug: "mobile-patrols",
+      title: "Mobile Patrol Areas",
+      description: "Flexible patrol services across Perth metropolitan and regional WA.",
+      icon: "Car",
       order: 6,
     },
-    {
-      slug: "concierge-services",
-      title: "Concierge Services",
-      shortDesc: "Professional concierge security for residential, hospitality, and corporate environments. Ensuring smooth operations and guest safety.",
-      longDesc:
-        "Premium concierge security blends hospitality with safety. Our concierge officers manage reception duties, access control, visitor vetting, package handling, and incident response in residential towers, hotels, resorts, and corporate lobbies. Presented in sharp formal attire, they uphold a polished first impression while maintaining comprehensive security oversight.",
-      icon: "Bell",
-      order: 7,
-    },
-    {
-      slug: "security-guards",
-      title: "Security Guards",
-      shortDesc: "Distinctly uniformed security personnel protecting property, assets, and people. The highest standards in guard services.",
-      longDesc:
-        "Fully-licensed static and roving security guards for retail, commercial, industrial, and residential sites. Every guard is background-checked, first-aid trained, and experienced in incident reporting, de-escalation, and emergency procedures. Options for armed and unarmed details available.",
-      icon: "UserCheck",
-      order: 8,
-    },
   ];
-
-  for (const service of services) {
-    await prisma.service.upsert({
-      where: { slug: service.slug },
-      update: {},
-      create: service,
-    });
+  for (const i of industries) {
+    await prisma.industry.create({ data: i });
   }
 
-  // 4. Industries (4)
-  const industries = [
+  // ─────────────────────────────────────────────────────────────────
+  // 5. Core values (7) — destructive replace
+  // ─────────────────────────────────────────────────────────────────
+  await prisma.coreValue.deleteMany({});
+  const coreValues = [
     {
-      slug: "local-government",
-      title: "Local Government",
+      title: "Right Personnel Selection",
       description:
-        "Proudly partnering with WA's local governments and councils to keep communities, public spaces, municipal buildings, and infrastructure safe.",
-      icon: "Landmark",
+        "Quality recruitment with rigorous screening — licence, experience, professionalism, and reliability.",
+      icon: "UserCheck",
       order: 1,
     },
     {
-      slug: "events",
-      title: "Events",
+      title: "Strong Operational Procedures",
       description:
-        "Tailored venue and event security with the highest standards and a smart workforce using smart technology. From small private gatherings to stadium shows.",
-      icon: "Ticket",
+        "Clear expectations, structured rosters, and consistent service delivery across all sites.",
+      icon: "ClipboardCheck",
       order: 2,
     },
     {
-      slug: "commercial",
-      title: "Commercial Properties",
+      title: "Active Management Supervision",
       description:
-        "State-of-the-art protection for office towers, retail precincts, warehouses, and training facilities — 24/7, including full concierge services.",
-      icon: "Building2",
+        "Supervisor visits, performance reviews, and procedure compliance checks ensure operational excellence.",
+      icon: "Eye",
       order: 3,
     },
     {
-      slug: "hotels",
-      title: "Hotels",
-      description:
-        "The chosen security service for over 100 of Perth's premier hospitality venues. Blending hospitality standards with vigilant protection.",
-      icon: "Hotel",
+      title: "Strong Supervision",
+      description: "We maintain consistent supervisory presence across all contracts.",
+      icon: "Shield",
       order: 4,
     },
+    {
+      title: "Quick Response",
+      description: "Rapid issue resolution and 24/7 communication availability.",
+      icon: "Zap",
+      order: 5,
+    },
+    {
+      title: "Open Communication",
+      description: "Transparent reporting, daily updates, and proactive client communication.",
+      icon: "MessageCircle",
+      order: 6,
+    },
+    {
+      title: "Continuous Improvement",
+      description:
+        "We continuously develop systems, processes, and people to deliver better service.",
+      icon: "TrendingUp",
+      order: 7,
+    },
   ];
-
-  for (const industry of industries) {
-    await prisma.industry.upsert({
-      where: { slug: industry.slug },
-      update: {},
-      create: industry,
-    });
+  for (const v of coreValues) {
+    await prisma.coreValue.create({ data: v });
   }
 
-  // 5. Testimonials (5)
+  // ─────────────────────────────────────────────────────────────────
+  // 6. Hero slides (3) — destructive replace
+  // ─────────────────────────────────────────────────────────────────
+  await prisma.heroSlide.deleteMany({});
+  const heroSlides = [
+    {
+      headline: "Your Security, Our Mission",
+      subheadline:
+        "Privately owned Western Australian company delivering reliable security solutions across Perth and surrounds.",
+      ctaText: "Get Free Consultation",
+      ctaLink: "/contact",
+      order: 1,
+    },
+    {
+      headline: "We Don't Mind 24/7 Communication",
+      subheadline: "Always available, always responsive — round-the-clock support and rapid response when you need us most.",
+      ctaText: "Contact Us",
+      ctaLink: "/contact",
+      order: 2,
+    },
+    {
+      headline: "Strong Management. Reliable Officers.",
+      subheadline:
+        "Since 2024, we prioritise operational reliability and active supervision over uncontrolled growth.",
+      ctaText: "Our Approach",
+      ctaLink: "/about",
+      order: 3,
+    },
+  ];
+  for (const h of heroSlides) {
+    await prisma.heroSlide.create({ data: h });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // 7. Partners / clients (6) — destructive replace
+  // ─────────────────────────────────────────────────────────────────
+  await prisma.partner.deleteMany({});
+  const partners = [
+    { name: "Perth Motorplex", category: "Client Portfolio", order: 1 },
+    { name: "Mazzucchelli's", category: "Client Portfolio", order: 2 },
+    { name: "Savills", category: "Client Portfolio", order: 3 },
+    { name: "Zamel's", category: "Client Portfolio", order: 4 },
+    { name: "Ashtar (WA)", category: "Trusts We Won", order: 5 },
+    { name: "Luxus (WA)", category: "Trusts We Won", order: 6 },
+  ];
+  for (const p of partners) {
+    await prisma.partner.create({ data: p });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // 8. Team members (6) — destructive replace
+  // ─────────────────────────────────────────────────────────────────
+  await prisma.teamMember.deleteMany({});
+  const team = [
+    {
+      name: "Dario Markonja",
+      role: "Director",
+      email: "dario.m@gunitsecurity.com.au",
+      bio:
+        "As Director of G-Unit Security, Dario leads the organisation with a clear focus on integrity, client satisfaction, and operational excellence.",
+      responsibilities: [
+        { title: "Strategic Leadership", description: "Driving growth, performance and long-term value." },
+        { title: "Client Focused", description: "Building strong partnerships through trust and reliability." },
+        { title: "Operational Excellence", description: "Ensuring high standards across all services and sites." },
+      ],
+      order: 1,
+    },
+    {
+      name: "Ali Shehzad",
+      role: "Business Development Director",
+      email: "ali.s@gunitsecurity.com.au",
+      bio:
+        "Ali is responsible for business development, client relationships, and identifying opportunities that drive sustainable growth.",
+      responsibilities: [
+        { title: "Business Growth", description: "Identifying new opportunities and expanding client base." },
+        { title: "Relationship Building", description: "Fostering long-term partnerships built on trust." },
+        { title: "Market Insight", description: "Understanding client needs and delivering tailored solutions." },
+      ],
+      order: 2,
+    },
+    {
+      name: "Hardik Walia (Hardy)",
+      role: "Business Development Manager / Scheduling Coordinator",
+      email: "h.walia@gunitsecurity.com.au",
+      phone: "0490 331 894",
+      bio:
+        "Building strong client relationships and streamlined scheduling to deliver security solutions that you can rely on.",
+      responsibilities: [
+        { title: "Client Relationships", description: "Building and nurturing strong partnerships through trust and effective communication." },
+        { title: "Scheduling Excellence", description: "Coordinating plans and resources to ensure seamless operations and client satisfaction." },
+        { title: "Operational Efficiency", description: "Streamlining processes to improve productivity and service delivery." },
+      ],
+      order: 3,
+    },
+    {
+      name: "Mandeep Sehrawat",
+      role: "Operations Manager",
+      email: "mandy.s@gunitsecurity.com.au",
+      bio:
+        "Mandeep ensures the smooth delivery of security services through strong supervision, planning, and operational control.",
+      responsibilities: [
+        { title: "Operations Oversight", description: "Managing day-to-day operations for efficiency and quality." },
+        { title: "Team Leadership", description: "Leading and mentoring teams to deliver high performance." },
+        { title: "Service Quality", description: "Maintaining strict standards and client satisfaction." },
+      ],
+      order: 4,
+    },
+    {
+      name: "Aman Pahwa",
+      role: "Rostering Manager",
+      email: "amy.p@gunitsecurity.com.au",
+      bio:
+        "Aman manages workforce scheduling and rostering to ensure the right people are in the right place at the right time.",
+      responsibilities: [
+        { title: "Workforce Planning", description: "Efficient rostering that ensures coverage and continuity." },
+        { title: "Schedule Optimisation", description: "Maximising resources while meeting client needs." },
+        { title: "Compliance Focus", description: "Ensuring all rosters meet legal and company requirements." },
+      ],
+      order: 5,
+    },
+    {
+      name: "Mandy",
+      role: "Client Services Manager",
+      bio: "Primary point of contact for client services and relationship management.",
+      order: 6,
+    },
+  ];
+  for (const m of team) {
+    await prisma.teamMember.create({ data: m });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // 9. Testimonials — keep existing seed data (idempotent)
+  // ─────────────────────────────────────────────────────────────────
   const testimonials = [
     {
       name: "Mark Reynolds",
       role: "Operations Manager",
       quote:
-        "G Unit Security were outstanding from start to finish. Their team was professional, calm, and highly reliable. We felt completely secure throughout our event.",
+        "G-Unit Security were outstanding from start to finish. Their team was professional, calm, and highly reliable. We felt completely secure throughout our event.",
       rating: 5,
       order: 1,
     },
@@ -182,7 +471,7 @@ async function main() {
       name: "Sarah Collins",
       role: "Property Manager",
       quote:
-        "We engaged G Unit Security for our retail premises and have been extremely impressed with their vigilance and reporting. Their presence has made a real difference.",
+        "We engaged G-Unit Security for our retail premises and have been extremely impressed with their vigilance and reporting. Their presence has made a real difference.",
       rating: 5,
       order: 2,
     },
@@ -190,7 +479,7 @@ async function main() {
       name: "Emily Harper",
       role: "Events & Hospitality Director",
       quote:
-        "Exceptional professionalism and discretion. G Unit Security handled our requirements flawlessly and exceeded expectations in every way.",
+        "Exceptional professionalism and discretion. G-Unit Security handled our requirements flawlessly and exceeded expectations in every way.",
       rating: 5,
       order: 3,
     },
@@ -212,109 +501,12 @@ async function main() {
       order: 5,
     },
   ];
-
   for (const testimonial of testimonials) {
     const existing = await prisma.testimonial.findFirst({
       where: { name: testimonial.name, role: testimonial.role },
     });
     if (!existing) {
       await prisma.testimonial.create({ data: testimonial });
-    }
-  }
-
-  // 6. Core Values (6)
-  const coreValues = [
-    {
-      title: "Customer-Centric",
-      description: "Your project's success is our priority. We tailor every engagement to your unique needs and requirements.",
-      icon: "Heart",
-      order: 1,
-    },
-    {
-      title: "Data-Centric",
-      description: "Informed decisions based on analytics, threat assessment, and continuous performance measurement.",
-      icon: "BarChart3",
-      order: 2,
-    },
-    {
-      title: "Relationship-Centric",
-      description: "Strong, long-term partnerships built on trust, transparency, and mutual respect with every client.",
-      icon: "HandshakeIcon",
-      order: 3,
-    },
-    {
-      title: "Policy-Centric",
-      description: "Strict adherence to industry regulations, compliance standards, and internal policies for safe operations.",
-      icon: "FileCheck",
-      order: 4,
-    },
-    {
-      title: "Employee-Centric",
-      description: "Investing in our team through continuous training, fair compensation, and career development opportunities.",
-      icon: "Users",
-      order: 5,
-    },
-    {
-      title: "Solution-Centric",
-      description: "Innovative approaches to complex security challenges. We don't just identify problems — we solve them.",
-      icon: "Lightbulb",
-      order: 6,
-    },
-  ];
-
-  for (const value of coreValues) {
-    const existing = await prisma.coreValue.findFirst({ where: { title: value.title } });
-    if (!existing) {
-      await prisma.coreValue.create({ data: value });
-    }
-  }
-
-  // 7. Hero slides (3)
-  const heroSlides = [
-    {
-      headline: "Protecting What Matters Most",
-      subheadline: "Perth's Premier Security Partner — Licensed, Insured, Trusted Since 2010.",
-      ctaText: "Request Free Quote",
-      ctaLink: "/contact",
-      order: 1,
-    },
-    {
-      headline: "Elite Security, Uncompromising Standards",
-      subheadline: "From VIP protection to large-scale crowd control, we deliver safety with the highest professionalism.",
-      ctaText: "Explore Services",
-      ctaLink: "/services",
-      order: 2,
-    },
-    {
-      headline: "24/7 Response Ready",
-      subheadline: "Rapid mobile patrols, alarm response, and live CCTV monitoring across Perth and surrounds.",
-      ctaText: "Call +61 426 842 606",
-      ctaLink: "tel:+61426842606",
-      order: 3,
-    },
-  ];
-
-  for (const slide of heroSlides) {
-    const existing = await prisma.heroSlide.findFirst({ where: { headline: slide.headline } });
-    if (!existing) {
-      await prisma.heroSlide.create({ data: slide });
-    }
-  }
-
-  // 8. Partners / trust badges (6)
-  const partners = [
-    { name: "WA Licensed", order: 1 },
-    { name: "SAIWA Member", order: 2 },
-    { name: "ASIAL Accredited", order: 3 },
-    { name: "$20M Insured", order: 4 },
-    { name: "24/7 Response", order: 5 },
-    { name: "Police Liaison", order: 6 },
-  ];
-
-  for (const partner of partners) {
-    const existing = await prisma.partner.findFirst({ where: { name: partner.name } });
-    if (!existing) {
-      await prisma.partner.create({ data: partner });
     }
   }
 

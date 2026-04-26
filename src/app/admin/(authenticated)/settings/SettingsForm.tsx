@@ -20,14 +20,42 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
         <FormField label="Company Name" error={err.companyName?.[0]}>
           <input
             name="companyName"
-            defaultValue={initial?.companyName ?? "G Unit Security"}
+            defaultValue={initial?.companyName ?? "G-Unit Security"}
             className={inputClass}
             required
           />
         </FormField>
-        <FormField label="Tagline" error={err.tagline?.[0]}>
-          <input name="tagline" defaultValue={initial?.tagline ?? ""} className={inputClass} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField label="Tagline" error={err.tagline?.[0]} hint='e.g. "Your Security, Our Mission"'>
+            <input name="tagline" defaultValue={initial?.tagline ?? ""} className={inputClass} />
+          </FormField>
+          <FormField
+            label="Subtitle"
+            error={err.subtitle?.[0]}
+            hint={`e.g. "We Don't Mind 24/7 Communication"`}
+          >
+            <input name="subtitle" defaultValue={initial?.subtitle ?? ""} className={inputClass} />
+          </FormField>
+        </div>
+        <FormField label="Description" error={err.description?.[0]} hint="Short paragraph used on About / footer">
+          <textarea
+            name="description"
+            defaultValue={initial?.description ?? ""}
+            className={textareaClass}
+            rows={3}
+          />
         </FormField>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <FormField label="Established" error={err.established?.[0]} hint='e.g. "2024"'>
+            <input name="established" defaultValue={initial?.established ?? ""} className={inputClass} />
+          </FormField>
+          <FormField label="Region" error={err.region?.[0]} hint='e.g. "Western Australia"'>
+            <input name="region" defaultValue={initial?.region ?? ""} className={inputClass} />
+          </FormField>
+          <FormField label="Website" error={err.website?.[0]}>
+            <input name="website" defaultValue={initial?.website ?? ""} className={inputClass} placeholder="www.gunitsecurity.com.au" />
+          </FormField>
+        </div>
       </section>
 
       <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
@@ -36,13 +64,30 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
           <FormField label="Phone" error={err.phone?.[0]}>
             <input name="phone" defaultValue={initial?.phone ?? ""} className={inputClass} required />
           </FormField>
-          <FormField label="Email" error={err.email?.[0]}>
+          <FormField label="Primary Email" error={err.email?.[0]} hint="Director / leadership inbox">
             <input
               type="email"
               name="email"
               defaultValue={initial?.email ?? ""}
               className={inputClass}
               required
+            />
+          </FormField>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField label="General Email" error={err.generalEmail?.[0]} hint="e.g. info@…">
+            <input
+              type="email"
+              name="generalEmail"
+              defaultValue={initial?.generalEmail ?? ""}
+              className={inputClass}
+            />
+          </FormField>
+          <FormField label="Emergency Response" error={err.emergencyResponse?.[0]} hint='e.g. "24/7"'>
+            <input
+              name="emergencyResponse"
+              defaultValue={initial?.emergencyResponse ?? ""}
+              className={inputClass}
             />
           </FormField>
         </div>

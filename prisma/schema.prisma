@@ -42,18 +42,25 @@ model User {
 }
 
 model SiteSettings {
-  id           String   @id @default(cuid())
-  companyName  String   @default("G Unit Security")
-  tagline      String?
-  phone        String
-  email        String
-  address      String
-  hours        String?
-  facebookUrl  String?
-  instagramUrl String?
-  linkedinUrl  String?
-  twitterUrl   String?
-  updatedAt    DateTime @updatedAt
+  id                String   @id @default(cuid())
+  companyName       String   @default("G-Unit Security")
+  tagline           String?
+  subtitle          String?
+  description       String?
+  phone             String
+  email             String
+  generalEmail      String?
+  address           String
+  hours             String?
+  website           String?
+  established       String?
+  region            String?
+  emergencyResponse String?
+  facebookUrl       String?
+  instagramUrl      String?
+  linkedinUrl       String?
+  twitterUrl        String?
+  updatedAt         DateTime @updatedAt
 }
 
 model Service {
@@ -64,6 +71,9 @@ model Service {
   longDesc  String
   icon      String
   imageUrl  String?
+  // Bullet-point feature list shown on service detail / home cards.
+  // Stored as JSON for flexibility (Postgres json column).
+  features  Json?
   order     Int      @default(0)
   published Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -136,11 +146,32 @@ model Partner {
   name      String
   logoUrl   String?
   website   String?
+  category  String?
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([order])
+  @@index([category])
+}
+
+model TeamMember {
+  id               String   @id @default(cuid())
+  name             String
+  role             String
+  email            String?
+  phone            String?
+  bio              String?
+  photoUrl         String?
+  // Array of {title, description} objects (stored as JSON).
+  responsibilities Json?
+  order            Int      @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
 }
 
 model ContactSubmission {

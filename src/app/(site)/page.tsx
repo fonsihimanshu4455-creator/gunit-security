@@ -3,6 +3,7 @@ import { TrustBar } from "@/components/home/TrustBar";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { WhyUs } from "@/components/home/WhyUs";
 import { IndustriesSection } from "@/components/home/IndustriesSection";
+import { TeamPreview } from "@/components/home/TeamPreview";
 import { Testimonials } from "@/components/home/Testimonials";
 import { CTASection } from "@/components/home/CTASection";
 import {
@@ -11,20 +12,23 @@ import {
   getPublishedServices,
   getPublishedIndustries,
   getPublishedTestimonials,
+  getActiveTeamMembers,
   getSiteSettings,
 } from "@/lib/site-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [slides, partners, services, industries, testimonials, settings] = await Promise.all([
-    getPublishedHeroSlides(),
-    getPartners(),
-    getPublishedServices(),
-    getPublishedIndustries(),
-    getPublishedTestimonials(),
-    getSiteSettings(),
-  ]);
+  const [slides, partners, services, industries, testimonials, team, settings] =
+    await Promise.all([
+      getPublishedHeroSlides(),
+      getPartners(),
+      getPublishedServices(),
+      getPublishedIndustries(),
+      getPublishedTestimonials(),
+      getActiveTeamMembers(),
+      getSiteSettings(),
+    ]);
 
   return (
     <>
@@ -33,6 +37,7 @@ export default async function HomePage() {
       <ServicesGrid services={services} />
       <WhyUs />
       <IndustriesSection industries={industries} />
+      <TeamPreview team={team} />
       <Testimonials items={testimonials} />
       <CTASection settings={settings} />
     </>

@@ -3,10 +3,10 @@ import { ArrowRight, CheckCircle } from "lucide-react";
 import { SectionLabel } from "@/components/shared/SectionLabel";
 
 const features = [
-  { title: "Customer-Centric", description: "Your project's success is our priority." },
-  { title: "Licensed Team", description: "Fully certified across all verticals." },
-  { title: "Police Network", description: "Strong ties with WA Police & Liquor Unit." },
-  { title: "24/7 Support", description: "Rapid response, any time of day." },
+  { title: "Right Personnel", description: "Quality recruitment with rigorous screening and reliability." },
+  { title: "Strong Procedures", description: "Clear expectations and consistent delivery across all sites." },
+  { title: "Active Supervision", description: "Supervisor visits and procedure-compliance checks." },
+  { title: "24/7 Communication", description: "Always available, always responsive." },
 ];
 
 export function WhyUs() {
@@ -82,9 +82,9 @@ export function WhyUs() {
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h4 className="font-display text-xl tracking-wider">$20M Insurance</h4>
+                <h4 className="font-display text-xl tracking-wider">Western Australian</h4>
                 <p className="text-xs text-gray-mid mt-0.5">
-                  Comprehensive public and professional indemnity coverage.
+                  Privately owned and locally operated since 2024.
                 </p>
               </div>
             </div>
@@ -96,8 +96,8 @@ export function WhyUs() {
               Excellence <span className="brand-gradient-text">Built On</span> Trust
             </h2>
             <p className="text-gray-mid text-lg leading-relaxed">
-              At G Unit Security, we combine rigorous training, advanced technology, and deep
-              industry expertise to deliver security solutions that protect what matters most.
+              At G-Unit Security, we focus on the right personnel, strong operational procedures,
+              and active management supervision — quality over uncontrolled growth.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-5 pt-4">

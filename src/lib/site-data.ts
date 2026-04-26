@@ -50,3 +50,10 @@ export const getPartners = cache(async () => {
     orderBy: { order: "asc" },
   });
 });
+
+export const getActiveTeamMembers = cache(async () => {
+  return prisma.teamMember.findMany({
+    where: { isActive: true },
+    orderBy: { order: "asc" },
+  });
+});

@@ -10,9 +10,19 @@ import {
   UserCheck,
   Landmark,
   Ticket,
+  Building,
   Building2,
   Hotel,
   Heart,
+  HeartPulse,
+  Warehouse,
+  HardHat,
+  ShoppingBag,
+  ClipboardCheck,
+  Eye,
+  Zap,
+  MessageCircle,
+  TrendingUp,
   BarChart3,
   Handshake,
   FileCheck,
@@ -33,6 +43,7 @@ import {
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
+  // Originals
   Shield,
   Users,
   Camera,
@@ -43,6 +54,7 @@ const iconMap: Record<string, LucideIcon> = {
   UserCheck,
   Landmark,
   Ticket,
+  Building,
   Building2,
   Hotel,
   Heart,
@@ -64,6 +76,16 @@ const iconMap: Record<string, LucideIcon> = {
   ArrowRight,
   Menu,
   X,
+  // PDF capability statement additions
+  HeartPulse,
+  Warehouse,
+  HardHat,
+  ShoppingBag,
+  ClipboardCheck,
+  Eye,
+  Zap,
+  MessageCircle,
+  TrendingUp,
 };
 
 export function resolveIcon(name: string | null | undefined): LucideIcon {

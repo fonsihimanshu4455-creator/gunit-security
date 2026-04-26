@@ -58,7 +58,7 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
         <div className="max-w-3xl space-y-8">
           <div className="inline-flex items-center gap-2 bg-red-primary/10 border border-red-primary/30 text-red-bright text-[11px] tracking-[3px] font-medium px-4 py-2 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-red-bright animate-pulse" />
-            LICENSED · INSURED · TRUSTED SINCE 2010
+            LICENSED · WESTERN AUSTRALIA · SINCE 2024
           </div>
 
           <h1 key={current?.id} className="font-display text-6xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-wider animate-[fade-up_0.8s_ease]">
@@ -89,10 +89,10 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-navy-light">
             {[
-              { value: "15+", label: "Years Experience" },
-              { value: "500+", label: "Clients Protected" },
-              { value: "$20M", label: "Insurance Coverage" },
-              { value: "24/7", label: "Response Ready" },
+              { value: "Since 2024", label: "Established WA" },
+              { value: "8", label: "Specialised Services" },
+              { value: "24/7", label: "Communication" },
+              { value: "100%", label: "Licensed Officers" },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="font-display text-4xl sm:text-5xl tracking-wider brand-gradient-text">

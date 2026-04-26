@@ -24,6 +24,11 @@ export function ServiceForm({ initial }: { initial?: Service }) {
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? null);
   const err = state.fieldErrors ?? {};
 
+  // `features` is stored as a JSON array of strings — render one per line.
+  const initialFeatures = Array.isArray(initial?.features)
+    ? (initial.features as string[]).join("\n")
+    : "";
+
   return (
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="imageUrl" value={imageUrl ?? ""} />
@@ -69,6 +74,20 @@ export function ServiceForm({ initial }: { initial?: Service }) {
             className={textareaClass}
             rows={6}
             required
+          />
+        </FormField>
+
+        <FormField
+          label="Features"
+          error={err.features?.[0]}
+          hint="One bullet per line — e.g. Site supervisors, Control room operators"
+        >
+          <textarea
+            name="features"
+            defaultValue={initialFeatures}
+            className={textareaClass}
+            rows={6}
+            placeholder={"Site supervisors\nControl room operators\nRover patrol officers"}
           />
         </FormField>
       </section>

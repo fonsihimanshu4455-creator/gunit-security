@@ -42,6 +42,7 @@ export default async function ServiceDetailPage({
 
   const others = all.filter((s) => s.id !== service.id).slice(0, 3);
   const Icon = resolveIcon(service.icon);
+  const features = Array.isArray(service.features) ? (service.features as string[]) : [];
 
   return (
     <>
@@ -66,6 +67,23 @@ export default async function ServiceDetailPage({
                 {service.longDesc}
               </p>
             </div>
+
+            {features.length > 0 && (
+              <div className="bg-navy-rich border border-navy-light rounded-2xl p-7">
+                <h2 className="font-display text-2xl tracking-wider mb-5">What&apos;s Included</h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-start gap-2.5 text-sm text-off-white/85"
+                    >
+                      <CheckCircle className="w-4 h-4 text-red-bright flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="flex flex-wrap gap-4 pt-4">
               <Link
                 href="/contact"

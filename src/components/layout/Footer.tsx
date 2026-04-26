@@ -17,14 +17,19 @@ export async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
             <Link href="/" className="font-display text-3xl tracking-[3px]">
-              <span className="brand-gradient-text">G UNIT</span>
+              <span className="brand-gradient-text">G-UNIT</span>
               <span className="text-off-white/80 ml-2 text-sm tracking-[4px] font-body font-medium">
                 SECURITY
               </span>
             </Link>
-            <p className="text-gray-mid text-sm mt-5 leading-relaxed">
-              Perth&apos;s premier security services company. Licensed, insured, and trusted by WA&apos;s
-              leading businesses for over 15 years.
+            {settings?.tagline && (
+              <p className="text-off-white/90 text-sm mt-3 font-medium tracking-wider">
+                {settings.tagline}
+              </p>
+            )}
+            <p className="text-gray-mid text-sm mt-4 leading-relaxed">
+              {settings?.description ??
+                "Privately owned Western Australian company delivering reliable security solutions across Perth and surrounds."}
             </p>
             <div className="flex items-center gap-3 mt-6">
               {socialMap.map(({ icon: Icon, key, label }) => {
@@ -66,6 +71,7 @@ export async function Footer() {
             <h4 className="font-display text-lg tracking-wider mb-4">Company</h4>
             <ul className="space-y-2.5 text-sm">
               <li><Link href="/about" className="text-gray-mid hover:text-red-bright transition">About Us</Link></li>
+              <li><Link href="/team" className="text-gray-mid hover:text-red-bright transition">Our Team</Link></li>
               <li><Link href="/career" className="text-gray-mid hover:text-red-bright transition">Careers</Link></li>
               <li><Link href="/contact" className="text-gray-mid hover:text-red-bright transition">Contact</Link></li>
               <li><Link href="/contact" className="text-gray-mid hover:text-red-bright transition">Get a Quote</Link></li>
@@ -97,13 +103,28 @@ export async function Footer() {
                   </a>
                 </li>
               )}
+              {settings?.generalEmail && settings.generalEmail !== settings.email && (
+                <li className="flex gap-3">
+                  <Mail className="w-4 h-4 mt-0.5 text-red-bright flex-shrink-0" />
+                  <a
+                    href={`mailto:${settings.generalEmail}`}
+                    className="text-gray-mid hover:text-off-white break-all"
+                  >
+                    {settings.generalEmail}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
 
         <div className="mt-12 pt-6 border-t border-navy-light flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-gray-mid">
-          <p>© {new Date().getFullYear()} {settings?.companyName ?? "G Unit Security"}. All Rights Reserved.</p>
-          <p>Licensed Security Provider · Western Australia</p>
+          <p>
+            © {new Date().getFullYear()} {settings?.companyName ?? "G-Unit Security"}. All Rights Reserved.
+          </p>
+          <p>
+            Licensed Security Provider · {settings?.region ?? "Western Australia"}
+          </p>
         </div>
       </div>
     </footer>
