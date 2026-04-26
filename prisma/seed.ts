@@ -26,6 +26,24 @@ async function main() {
     },
   });
 
+  // Read-only client user (Hardik / Dario can sign in here without
+  // touching content). Email + password come from env vars so they can
+  // be rotated without a code change.
+  const clientEmail = process.env.DEFAULT_CLIENT_EMAIL ?? "client@gunitsecurity.com.au";
+  const clientPassword = process.env.DEFAULT_CLIENT_PASSWORD ?? "GUnit@Client2026";
+  const clientHash = await bcrypt.hash(clientPassword, 12);
+
+  await prisma.user.upsert({
+    where: { email: clientEmail },
+    update: { passwordHash: clientHash, role: "CLIENT" },
+    create: {
+      email: clientEmail,
+      passwordHash: clientHash,
+      name: "Client",
+      role: "CLIENT",
+    },
+  });
+
   // ─────────────────────────────────────────────────────────────────
   // 2. Site settings (single row — upsert by first existing id)
   // ─────────────────────────────────────────────────────────────────
@@ -459,14 +477,24 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────
   // 9. Testimonials — keep existing seed data (idempotent)
   // ─────────────────────────────────────────────────────────────────
+  // Final order + copy from the legacy gunitsecurity.com.au testimonials.
   const testimonials = [
+    {
+      name: "Aman Singh",
+      role: "Producer",
+      company: "YS Production",
+      quote:
+        "Very professional service. I will be using your services again for the next event.",
+      rating: 5,
+      order: 1,
+    },
     {
       name: "Mark Reynolds",
       role: "Operations Manager",
       quote:
         "G-Unit Security were outstanding from start to finish. Their team was professional, calm, and highly reliable. We felt completely secure throughout our event.",
       rating: 5,
-      order: 1,
+      order: 2,
     },
     {
       name: "Sarah Collins",
@@ -474,30 +502,21 @@ async function main() {
       quote:
         "We engaged G-Unit Security for our retail premises and have been extremely impressed with their vigilance and reporting. Their presence has made a real difference.",
       rating: 5,
-      order: 2,
+      order: 3,
+    },
+    {
+      name: "Daniel Thompson",
+      role: "Construction Project Lead",
+      quote:
+        "The team provided reliable and well-trained guards for our construction site. Communication was clear and the service was consistently professional.",
+      rating: 5,
+      order: 4,
     },
     {
       name: "Emily Harper",
       role: "Events & Hospitality Director",
       quote:
         "Exceptional professionalism and discretion. G-Unit Security handled our requirements flawlessly and exceeded expectations in every way.",
-      rating: 5,
-      order: 3,
-    },
-    {
-      name: "Aman Singh",
-      role: "Producer",
-      company: "YS Production",
-      quote:
-        "Reliable, responsive, and professional. The crowd management at our shows has been seamless — the team knows exactly how to handle any situation.",
-      rating: 5,
-      order: 4,
-    },
-    {
-      name: "Daniel Thompson",
-      role: "Construction Project Lead",
-      quote:
-        "Our site has been secured flawlessly through a large build-out. Mobile patrols, alarm response, and lock-up checks all handled without a single issue.",
       rating: 5,
       order: 5,
     },
@@ -574,8 +593,19 @@ async function main() {
     });
   }
 
+  // Sync testimonial quote / order with the latest legacy-site copy.
+  // updateMany matches by name+role and is a no-op if there's no row, so this
+  // is safe to leave running on every deploy.
+  for (const t of testimonials) {
+    await prisma.testimonial.updateMany({
+      where: { name: t.name, role: t.role },
+      data: { quote: t.quote, order: t.order, rating: t.rating, company: t.company ?? null },
+    });
+  }
+
   console.log("Seed complete.");
   console.log(`Admin login: ${adminEmail} / (from DEFAULT_ADMIN_PASSWORD)`);
+  console.log(`Client login: ${clientEmail} / (from DEFAULT_CLIENT_PASSWORD)`);
 }
 
 main()

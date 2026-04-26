@@ -21,6 +21,7 @@ datasource db {
 enum Role {
   ADMIN
   EDITOR
+  CLIENT
 }
 
 enum ApplicationStatus {
@@ -60,6 +61,12 @@ model SiteSettings {
   instagramUrl      String?
   linkedinUrl       String?
   twitterUrl        String?
+  // Client-logo marquee controls
+  marqueeSpeed      Int      @default(40)
+  marqueeDirection String   @default("left")
+  marqueePauseOnHover Boolean @default(true)
+  logoMaxWidth     Int      @default(150)
+  logoMaxHeight    Int      @default(80)
   updatedAt         DateTime @updatedAt
 }
 
@@ -147,7 +154,11 @@ model Partner {
   logoUrl   String?
   website   String?
   category  String?
+  // Per-partner display dimensions (overrides SiteSettings defaults).
+  width     Int      @default(150)
+  height    Int      @default(80)
   order     Int      @default(0)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -18,7 +18,10 @@ type FormValues = z.infer<typeof schema>;
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/admin/dashboard";
+  // /admin (route group root) routes by role to /admin/dashboard or
+  // /admin/client-dashboard, so the redirect picks the right place
+  // for whichever role just logged in.
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
 
   const [serverError, setServerError] = useState<string | null>(null);
 

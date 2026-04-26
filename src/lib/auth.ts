@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
-type Role = "ADMIN" | "EDITOR";
+type Role = "ADMIN" | "EDITOR" | "CLIENT";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },

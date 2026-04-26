@@ -23,6 +23,11 @@ const schema = z.object({
   instagramUrl: z.string().url().or(z.literal("")).optional(),
   linkedinUrl: z.string().url().or(z.literal("")).optional(),
   twitterUrl: z.string().url().or(z.literal("")).optional(),
+  marqueeSpeed: z.coerce.number().int().min(10).max(120).default(40),
+  marqueeDirection: z.enum(["left", "right"]).default("left"),
+  marqueePauseOnHover: z.coerce.boolean().default(true),
+  logoMaxWidth: z.coerce.number().int().min(40).max(400).default(150),
+  logoMaxHeight: z.coerce.number().int().min(20).max(200).default(80),
 });
 
 export type SettingsFormState = {
@@ -60,6 +65,11 @@ export async function updateSettings(
     instagramUrl: formData.get("instagramUrl") ?? undefined,
     linkedinUrl: formData.get("linkedinUrl") ?? undefined,
     twitterUrl: formData.get("twitterUrl") ?? undefined,
+    marqueeSpeed: formData.get("marqueeSpeed") ?? 40,
+    marqueeDirection: formData.get("marqueeDirection") ?? "left",
+    marqueePauseOnHover: formData.get("marqueePauseOnHover") === "on",
+    logoMaxWidth: formData.get("logoMaxWidth") ?? 150,
+    logoMaxHeight: formData.get("logoMaxHeight") ?? 80,
   });
 
   if (!parsed.success) {
@@ -88,6 +98,11 @@ export async function updateSettings(
     instagramUrl: nullIfEmpty(formData.get("instagramUrl")),
     linkedinUrl: nullIfEmpty(formData.get("linkedinUrl")),
     twitterUrl: nullIfEmpty(formData.get("twitterUrl")),
+    marqueeSpeed: parsed.data.marqueeSpeed,
+    marqueeDirection: parsed.data.marqueeDirection,
+    marqueePauseOnHover: parsed.data.marqueePauseOnHover,
+    logoMaxWidth: parsed.data.logoMaxWidth,
+    logoMaxHeight: parsed.data.logoMaxHeight,
   };
 
   const existing = await prisma.siteSettings.findFirst();

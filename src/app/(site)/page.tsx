@@ -35,7 +35,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero slides={slides} />
-      <TrustBar partners={partners} />
+      <TrustBar partners={partners} settings={settings} />
       <ServicesGrid services={services} />
       <WhyUs />
       <IndustriesSection industries={industries} />

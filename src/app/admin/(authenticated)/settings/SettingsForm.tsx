@@ -139,6 +139,70 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
         </div>
       </section>
 
+      <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
+        <h2 className="font-display text-xl tracking-wider">Client Logos Marquee</h2>
+        <p className="text-xs text-gray-mid -mt-2">
+          Controls the scrolling client logos strip on the homepage.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField
+            label="Speed (seconds per loop)"
+            error={err.marqueeSpeed?.[0]}
+            hint="Lower = faster. 40 is a calm default."
+          >
+            <input
+              type="number"
+              name="marqueeSpeed"
+              min={10}
+              max={120}
+              defaultValue={initial?.marqueeSpeed ?? 40}
+              className={inputClass}
+            />
+          </FormField>
+          <FormField label="Direction" error={err.marqueeDirection?.[0]}>
+            <select
+              name="marqueeDirection"
+              defaultValue={initial?.marqueeDirection ?? "left"}
+              className={inputClass}
+            >
+              <option value="left">← Left</option>
+              <option value="right">Right →</option>
+            </select>
+          </FormField>
+          <FormField label="Default logo width (px)" error={err.logoMaxWidth?.[0]}>
+            <input
+              type="number"
+              name="logoMaxWidth"
+              min={40}
+              max={400}
+              defaultValue={initial?.logoMaxWidth ?? 150}
+              className={inputClass}
+            />
+          </FormField>
+          <FormField label="Default logo height (px)" error={err.logoMaxHeight?.[0]}>
+            <input
+              type="number"
+              name="logoMaxHeight"
+              min={20}
+              max={200}
+              defaultValue={initial?.logoMaxHeight ?? 80}
+              className={inputClass}
+            />
+          </FormField>
+        </div>
+        <FormField label="Pause on hover">
+          <label className="flex items-center gap-2 h-[42px]">
+            <input
+              type="checkbox"
+              name="marqueePauseOnHover"
+              defaultChecked={initial?.marqueePauseOnHover ?? true}
+              className="w-4 h-4 accent-red-bright"
+            />
+            <span className="text-sm">Stop scrolling when the user hovers over a logo</span>
+          </label>
+        </FormField>
+      </section>
+
       <div className="flex items-center gap-4">
         <Button type="submit" disabled={isPending}>
           <Save className="w-3.5 h-3.5" />

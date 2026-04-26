@@ -10,7 +10,11 @@ const schema = z.object({
   name: z.string().min(1),
   logoUrl: z.string().optional(),
   website: z.string().url().or(z.literal("")).optional(),
+  category: z.string().optional(),
+  width: z.coerce.number().int().min(40).max(400).default(150),
+  height: z.coerce.number().int().min(20).max(200).default(80),
   order: z.coerce.number().int().default(0),
+  isActive: z.coerce.boolean().default(true),
 });
 
 export type PartnerFormState = {
@@ -24,7 +28,11 @@ function parse(formData: FormData) {
     name: formData.get("name"),
     logoUrl: formData.get("logoUrl") || undefined,
     website: formData.get("website") || undefined,
+    category: formData.get("category") || undefined,
+    width: formData.get("width") ?? 150,
+    height: formData.get("height") ?? 80,
     order: formData.get("order") ?? 0,
+    isActive: formData.get("isActive") === "on",
   });
 }
 
@@ -48,6 +56,10 @@ export async function createPartner(
       order: parsed.data.order,
       logoUrl: parsed.data.logoUrl || null,
       website: parsed.data.website || null,
+      category: parsed.data.category || null,
+      width: parsed.data.width,
+      height: parsed.data.height,
+      isActive: parsed.data.isActive,
     },
   });
 
@@ -78,6 +90,10 @@ export async function updatePartner(
       order: parsed.data.order,
       logoUrl: parsed.data.logoUrl || null,
       website: parsed.data.website || null,
+      category: parsed.data.category || null,
+      width: parsed.data.width,
+      height: parsed.data.height,
+      isActive: parsed.data.isActive,
     },
   });
 
