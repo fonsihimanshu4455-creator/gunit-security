@@ -27,9 +27,12 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
             src={current.imageUrl}
             alt=""
             aria-hidden
-            className="absolute inset-0 w-full h-full object-cover opacity-50 animate-[fade-up_0.8s_ease]"
+            className="absolute inset-0 w-full h-full object-cover object-[60%_30%] md:object-[70%_30%] opacity-60 animate-[fade-up_0.8s_ease]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 via-navy-deep/55 to-navy-deep pointer-events-none" />
+          {/* Stronger overlay on the LEFT where text sits, lighter on the right
+              so the photo subject still reads through. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/85 md:via-navy-deep/75 to-navy-deep/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-navy-deep pointer-events-none" />
         </>
       )}
       <div className="absolute inset-0 bg-gradient-to-br from-red-primary/10 via-transparent to-blue-primary/10 pointer-events-none" />

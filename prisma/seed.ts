@@ -53,9 +53,10 @@ async function main() {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 3. Services (8) — destructive replace so old slugs are removed
+  // 3. Services (8) — idempotent: only seed when the table is empty,
+  //    so admin edits and uploaded image URLs aren't wiped on redeploy.
   // ─────────────────────────────────────────────────────────────────
-  await prisma.service.deleteMany({});
+  if ((await prisma.service.count()) === 0) {
   const services = [
     {
       slug: "commercial-guarding",
@@ -211,14 +212,15 @@ async function main() {
       ],
     },
   ];
-  for (const s of services) {
-    await prisma.service.create({ data: s });
+    for (const s of services) {
+      await prisma.service.create({ data: s });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 4. Industries (6) — destructive replace
+  // 4. Industries (6) — idempotent
   // ─────────────────────────────────────────────────────────────────
-  await prisma.industry.deleteMany({});
+  if ((await prisma.industry.count()) === 0) {
   const industries = [
     {
       slug: "commercial-corporate",
@@ -264,14 +266,15 @@ async function main() {
       order: 6,
     },
   ];
-  for (const i of industries) {
-    await prisma.industry.create({ data: i });
+    for (const i of industries) {
+      await prisma.industry.create({ data: i });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 5. Core values (7) — destructive replace
+  // 5. Core values (7) — idempotent
   // ─────────────────────────────────────────────────────────────────
-  await prisma.coreValue.deleteMany({});
+  if ((await prisma.coreValue.count()) === 0) {
   const coreValues = [
     {
       title: "Right Personnel Selection",
@@ -320,14 +323,15 @@ async function main() {
       order: 7,
     },
   ];
-  for (const v of coreValues) {
-    await prisma.coreValue.create({ data: v });
+    for (const v of coreValues) {
+      await prisma.coreValue.create({ data: v });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 6. Hero slides (3) — destructive replace
+  // 6. Hero slides (3) — idempotent (preserves admin-uploaded images)
   // ─────────────────────────────────────────────────────────────────
-  await prisma.heroSlide.deleteMany({});
+  if ((await prisma.heroSlide.count()) === 0) {
   const heroSlides = [
     {
       headline: "Your Security, Our Mission",
@@ -353,14 +357,15 @@ async function main() {
       order: 3,
     },
   ];
-  for (const h of heroSlides) {
-    await prisma.heroSlide.create({ data: h });
+    for (const h of heroSlides) {
+      await prisma.heroSlide.create({ data: h });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 7. Partners / clients (6) — destructive replace
+  // 7. Partners / clients (6) — idempotent (preserves logos)
   // ─────────────────────────────────────────────────────────────────
-  await prisma.partner.deleteMany({});
+  if ((await prisma.partner.count()) === 0) {
   const partners = [
     { name: "Perth Motorplex", category: "Client Portfolio", order: 1 },
     { name: "Mazzucchelli's", category: "Client Portfolio", order: 2 },
@@ -369,14 +374,15 @@ async function main() {
     { name: "Ashtar (WA)", category: "Trusts We Won", order: 5 },
     { name: "Luxus (WA)", category: "Trusts We Won", order: 6 },
   ];
-  for (const p of partners) {
-    await prisma.partner.create({ data: p });
+    for (const p of partners) {
+      await prisma.partner.create({ data: p });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 8. Team members (6) — destructive replace
+  // 8. Team members (5) — idempotent (preserves photos)
   // ─────────────────────────────────────────────────────────────────
-  await prisma.teamMember.deleteMany({});
+  if ((await prisma.teamMember.count()) === 0) {
   const team = [
     {
       name: "Dario Markonja",
@@ -393,14 +399,14 @@ async function main() {
     },
     {
       name: "Ali Shehzad",
-      role: "Business Development Director",
+      role: "Event Manager",
       email: "ali.s@gunitsecurity.com.au",
       bio:
-        "Ali is responsible for business development, client relationships, and identifying opportunities that drive sustainable growth.",
+        "Ali leads event security operations — planning, coordinating, and on-the-ground delivery for licensed venues, corporate functions, and large-scale gatherings.",
       responsibilities: [
-        { title: "Business Growth", description: "Identifying new opportunities and expanding client base." },
-        { title: "Relationship Building", description: "Fostering long-term partnerships built on trust." },
-        { title: "Market Insight", description: "Understanding client needs and delivering tailored solutions." },
+        { title: "Event Planning", description: "End-to-end planning for crowd-control and venue contracts." },
+        { title: "On-Site Leadership", description: "Coordinating teams during live events to keep patrons safe." },
+        { title: "Client Liaison", description: "Single point of contact for event organisers before and during shifts." },
       ],
       order: 2,
     },
@@ -419,15 +425,15 @@ async function main() {
       order: 3,
     },
     {
-      name: "Mandeep Sehrawat",
+      name: "Mandy",
       role: "Operations Manager",
       email: "mandy.s@gunitsecurity.com.au",
       bio:
-        "Mandeep ensures the smooth delivery of security services through strong supervision, planning, and operational control.",
+        "Mandy ensures the smooth delivery of security services through strong supervision, planning, and operational control. She is also the primary point of contact for client services and relationship management.",
       responsibilities: [
         { title: "Operations Oversight", description: "Managing day-to-day operations for efficiency and quality." },
         { title: "Team Leadership", description: "Leading and mentoring teams to deliver high performance." },
-        { title: "Service Quality", description: "Maintaining strict standards and client satisfaction." },
+        { title: "Client Services", description: "Primary point of contact for clients and ongoing relationship management." },
       ],
       order: 4,
     },
@@ -444,15 +450,10 @@ async function main() {
       ],
       order: 5,
     },
-    {
-      name: "Mandy",
-      role: "Client Services Manager",
-      bio: "Primary point of contact for client services and relationship management.",
-      order: 6,
-    },
   ];
-  for (const m of team) {
-    await prisma.teamMember.create({ data: m });
+    for (const m of team) {
+      await prisma.teamMember.create({ data: m });
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────
