@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { HeroSlide } from "@prisma/client";
 
 export function Hero({ slides }: { slides: HeroSlide[] }) {
@@ -10,141 +11,154 @@ export function Hero({ slides }: { slides: HeroSlide[] }) {
 
   useEffect(() => {
     if (slides.length <= 1) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 7000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 8000);
     return () => clearInterval(id);
   }, [slides.length]);
 
   const current = slides[index];
 
   return (
-    <section className="relative min-h-[88vh] flex items-center overflow-hidden grid-bg">
-      {/* Background image — admin-set per slide */}
-      {current?.imageUrl && (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+    <section className="relative min-h-[100vh] flex items-center overflow-hidden grid-bg">
+      {/* Background image — slow Ken Burns zoom */}
+      <AnimatePresence mode="wait">
+        {current?.imageUrl && (
+          <motion.div
             key={`bg-${current.id}`}
-            src={current.imageUrl}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 w-full h-full object-cover object-[60%_30%] md:object-[70%_30%] opacity-60 animate-[fade-up_0.8s_ease]"
-          />
-          {/* Stronger overlay on the LEFT where text sits, lighter on the right
-              so the photo subject still reads through. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/85 md:via-navy-deep/75 to-navy-deep/40 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-navy-deep pointer-events-none" />
-        </>
-      )}
-      <div className="absolute inset-0 bg-gradient-to-br from-red-primary/10 via-transparent to-blue-primary/10 pointer-events-none" />
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="absolute inset-0 overflow-hidden"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={current.imageUrl}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 w-full h-full object-cover object-[60%_30%] md:object-[70%_30%] opacity-60 ken-burns"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Rotating shield background */}
-      <svg
-        className="absolute -right-20 top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-20 pointer-events-none animate-[spin_120s_linear_infinite]"
-        viewBox="0 0 200 200"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="heroShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#c8102e" />
-            <stop offset="100%" stopColor="#1e3a8a" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M100 20 L170 50 L170 110 Q170 160 100 180 Q30 160 30 110 L30 50 Z"
-          fill="none"
-          stroke="url(#heroShieldGrad)"
-          strokeWidth="1"
-        />
-        <path
-          d="M100 30 L160 55 L160 110 Q160 155 100 170 Q40 155 40 110 L40 55 Z"
-          fill="none"
-          stroke="url(#heroShieldGrad)"
-          strokeWidth="1"
-          opacity="0.6"
-        />
-        <path
-          d="M100 40 L150 60 L150 110 Q150 150 100 160 Q50 150 50 110 L50 60 Z"
-          fill="none"
-          stroke="url(#heroShieldGrad)"
-          strokeWidth="1"
-          opacity="0.3"
-        />
-      </svg>
+      {/* Gradients — left dim for text contrast, right reveals subject, vertical fade-out at bottom */}
+      <div className="absolute inset-0 bg-gradient-to-r from-pure-black via-pure-black/85 md:via-pure-black/70 to-pure-black/35 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-navy-deep pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-red-primary/8 via-transparent to-blue-primary/8 pointer-events-none" />
 
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-8 w-full relative z-10">
-        <div className="max-w-3xl space-y-8">
-          <div className="inline-flex items-center gap-2 bg-red-primary/10 border border-red-primary/30 text-red-bright text-[11px] tracking-[3px] font-medium px-4 py-2 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-bright animate-pulse" />
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12 w-full relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="max-w-3xl space-y-10"
+        >
+          <div className="inline-flex items-center gap-2 bg-gold-accent/10 border border-gold-accent/30 text-gold-bright text-[10px] tracking-[5px] font-medium px-5 py-2.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-gold-bright animate-pulse" />
             LICENSED · WESTERN AUSTRALIA · SINCE 2024
           </div>
 
-          <h1 key={current?.id} className="font-display text-6xl sm:text-7xl lg:text-8xl leading-[0.95] tracking-wider animate-[fade-up_0.8s_ease]">
-            {current?.headline ?? "Protecting What Matters Most"}
-          </h1>
-
-          <p className="font-serif italic text-2xl text-off-white/75 max-w-2xl leading-relaxed">
-            {current?.subheadline ?? "Perth's Premier Security Partner."}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-4">
-            {current?.ctaText && current?.ctaLink && (
-              <Link
-                href={current.ctaLink}
-                className="group inline-flex items-center gap-2 bg-gradient-to-r from-red-primary to-red-deep hover:from-red-bright hover:to-red-primary text-white text-xs tracking-[3px] uppercase font-medium px-7 py-4 rounded-lg transition shadow-[0_20px_50px_-15px_rgba(200,16,46,0.6)]"
-              >
-                {current.ctaText}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-              </Link>
-            )}
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 border border-off-white/20 hover:border-off-white/50 text-off-white text-xs tracking-[3px] uppercase font-medium px-7 py-4 rounded-lg transition"
+          <AnimatePresence mode="wait">
+            <motion.h1
+              key={`headline-${current?.id}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-7xl sm:text-8xl lg:text-[8.5rem] leading-[0.92] tracking-wider uppercase"
             >
-              Explore Services
-            </Link>
+              {current?.headline ?? "Protecting What Matters"}
+            </motion.h1>
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`sub-${current?.id}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="font-serif italic text-2xl md:text-3xl text-off-white/75 max-w-2xl leading-relaxed"
+            >
+              {current?.subheadline ?? "Perth's Premier Security Partner."}
+            </motion.p>
+          </AnimatePresence>
+
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            {current?.ctaText && current?.ctaLink && (
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  href={current.ctaLink}
+                  className="group inline-flex items-center gap-2.5 bg-gradient-to-r from-red-primary via-red-deep to-red-primary bg-[length:200%_100%] hover:bg-right text-white text-xs tracking-[3px] uppercase font-medium px-9 py-4 rounded-lg transition-[background-position] duration-700 shadow-[0_25px_60px_-20px_rgba(200,16,46,0.8)]"
+                >
+                  {current.ctaText}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </motion.div>
+            )}
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-2 border border-gold-accent/40 hover:border-gold-bright text-off-white text-xs tracking-[3px] uppercase font-medium px-9 py-4 rounded-lg transition"
+              >
+                Explore Services
+              </Link>
+            </motion.div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-navy-light">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-12 border-t border-white/10">
             {[
               { value: "Since 2024", label: "Established WA" },
               { value: "8", label: "Specialised Services" },
               { value: "24/7", label: "Communication" },
               { value: "100%", label: "Licensed Officers" },
-            ].map((stat) => (
-              <div key={stat.label}>
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 + i * 0.1 }}
+              >
                 <p className="font-display text-4xl sm:text-5xl tracking-wider brand-gradient-text">
                   {stat.value}
                 </p>
-                <p className="text-xs tracking-[2px] text-gray-mid mt-1 uppercase">
+                <p className="text-[10px] tracking-[3px] text-off-white/50 mt-1.5 uppercase">
                   {stat.label}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
+      {/* Slide indicators */}
       {slides.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
+        <div className="absolute bottom-24 md:bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
           {slides.map((s, i) => (
             <button
               key={s.id}
               onClick={() => setIndex(i)}
               aria-label={`Slide ${i + 1}`}
-              className={`h-1 rounded-full transition-all ${
-                i === index ? "w-10 bg-red-bright" : "w-4 bg-off-white/20 hover:bg-off-white/40"
+              className={`h-[2px] rounded-full transition-all ${
+                i === index ? "w-12 bg-gold-bright" : "w-5 bg-off-white/25 hover:bg-off-white/50"
               }`}
             />
           ))}
         </div>
       )}
 
-      <style>{`
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        className="hidden md:flex absolute bottom-8 right-8 flex-col items-center gap-2 z-20 text-off-white/40"
+      >
+        <span className="text-[10px] tracking-[4px] uppercase rotate-90 origin-center mb-3">
+          Scroll
+        </span>
+        <ChevronDown className="w-4 h-4 animate-bounce" />
+      </motion.div>
     </section>
   );
 }

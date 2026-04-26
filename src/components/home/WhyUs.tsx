@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { SectionLabel } from "@/components/shared/SectionLabel";
+import { Reveal } from "@/components/shared/Reveal";
 
 const features = [
   { title: "Right Personnel", description: "Quality recruitment with rigorous screening and reliability." },
@@ -12,9 +13,9 @@ const features = [
 export function WhyUs() {
   return (
     <section className="py-24 bg-navy-rich/40 grid-bg">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="relative">
+          <Reveal direction="left" className="relative">
             <svg
               className="w-full max-w-md mx-auto"
               viewBox="0 0 200 240"
@@ -88,9 +89,9 @@ export function WhyUs() {
                 </p>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="space-y-6">
+          <Reveal direction="right" className="space-y-6">
             <SectionLabel>Why Choose Us</SectionLabel>
             <h2 className="font-display text-5xl sm:text-6xl tracking-wider">
               Excellence <span className="brand-gradient-text">Built On</span> Trust
@@ -121,7 +122,7 @@ export function WhyUs() {
               Learn Our Story
               <ArrowRight className="w-4 h-4" />
             </Link>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

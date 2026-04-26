@@ -2,24 +2,35 @@
 
 /* G Unit Security — brand tokens (Tailwind v4 CSS-first theme) */
 @theme {
+  /* Navy backgrounds (existing) */
   --color-navy-deep: #0a0e1a;
   --color-navy-rich: #0f1629;
   --color-navy-mid: #1a2342;
   --color-navy-light: #2a3558;
 
+  /* Pure black / luxury depth */
+  --color-pure-black: #050507;
+  --color-near-black: #0a0a0c;
+
+  /* Brand reds */
   --color-red-primary: #c8102e;
   --color-red-bright: #e63946;
   --color-red-deep: #8b0000;
 
+  /* Brand blues */
   --color-blue-primary: #1e3a8a;
   --color-blue-royal: #1d4ed8;
   --color-blue-light: #3b82f6;
 
+  /* Whites & greys */
   --color-off-white: #f8f9fc;
   --color-gray-mid: #9ca3af;
   --color-gray-dark: #4b5563;
 
+  /* Luxury gold accent — refined palette */
   --color-gold-accent: #d4af37;
+  --color-gold-soft: #c9a646;
+  --color-gold-bright: #e6c25c;
 
   --font-display: var(--font-display), "Bebas Neue", sans-serif;
   --font-serif: var(--font-serif), "Cormorant Garamond", serif;
@@ -29,7 +40,15 @@
 :root {
   --shadow-red: 0 10px 40px rgba(200, 16, 46, 0.4);
   --shadow-blue: 0 10px 40px rgba(30, 58, 138, 0.4);
+  --shadow-gold: 0 10px 40px rgba(212, 175, 55, 0.25);
+  --shadow-luxury: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  --shadow-glow-red: 0 0 60px rgba(200, 16, 46, 0.4);
   --transition-smooth: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+html {
+  /* Smooth scrolling site-wide for the luxury feel */
+  scroll-behavior: smooth;
 }
 
 html,
@@ -40,9 +59,33 @@ body {
 
 body {
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Utility — brand gradient text */
+/* Refined headline kerning for the cinematic feel */
+.font-display {
+  letter-spacing: 0.02em;
+}
+
+/* Custom scrollbar — subtle red accent */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-navy-deep);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-red-deep), var(--color-blue-primary));
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--color-red-primary), var(--color-blue-royal));
+  }
+}
+
+/* Brand gradient text */
 .brand-gradient-text {
   background: linear-gradient(135deg, var(--color-red-bright), var(--color-blue-light));
   -webkit-background-clip: text;
@@ -50,10 +93,45 @@ body {
   color: transparent;
 }
 
-/* Utility — subtle grid background */
+/* Luxury gold gradient text */
+.gold-gradient-text {
+  background: linear-gradient(135deg, var(--color-gold-bright), var(--color-gold-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle grid background */
 .grid-bg {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
+}
+
+/* Luxury card — glassmorphism + subtle border + lift on hover */
+.card-luxury {
+  background: linear-gradient(180deg, rgba(15, 22, 41, 0.85), rgba(10, 14, 26, 0.75));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.4s var(--transition-smooth), box-shadow 0.4s var(--transition-smooth),
+    border-color 0.3s ease;
+}
+.card-luxury:hover {
+  transform: translateY(-6px);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: var(--shadow-luxury), var(--shadow-gold);
+}
+
+/* Ken Burns slow zoom for hero backgrounds */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-1%, 1%);
+  }
+}
+.ken-burns {
+  animation: ken-burns 18s ease-out forwards;
 }
