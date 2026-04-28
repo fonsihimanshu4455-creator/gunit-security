@@ -16,11 +16,22 @@ export async function Footer() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
-            <Link href="/" className="font-display text-3xl tracking-[3px]">
-              <span className="brand-gradient-text">G-UNIT</span>
-              <span className="text-off-white/80 ml-2 text-sm tracking-[4px] font-body font-medium">
-                SECURITY
-              </span>
+            <Link href="/" className="inline-flex items-center gap-3">
+              {settings?.logoUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={settings.logoUrl}
+                  alt={settings.companyName ?? "G-Unit Security"}
+                  className="h-12 w-auto object-contain"
+                />
+              ) : (
+                <span className="font-display text-3xl tracking-[3px]">
+                  <span className="brand-gradient-text">G-UNIT</span>
+                  <span className="text-off-white/80 ml-2 text-sm tracking-[4px] font-body font-medium">
+                    SECURITY
+                  </span>
+                </span>
+              )}
             </Link>
             {settings?.tagline && (
               <p className="text-off-white/90 text-sm mt-3 font-medium tracking-wider">

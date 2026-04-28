@@ -1,20 +1,37 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { SiteSettings } from "@prisma/client";
 import { Save, CheckCircle } from "lucide-react";
 import { updateSettings, type SettingsFormState } from "@/server/actions/settings";
 import { FormField, inputClass, textareaClass } from "@/components/admin/FormField";
 import { Button } from "@/components/admin/Button";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
 const initialState: SettingsFormState = { ok: false };
 
 export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
   const [state, formAction, isPending] = useActionState(updateSettings, initialState);
+  const [logoUrl, setLogoUrl] = useState(initial?.logoUrl ?? null);
   const err = state.fieldErrors ?? {};
 
   return (
     <form action={formAction} className="space-y-6">
+      <input type="hidden" name="logoUrl" value={logoUrl ?? ""} />
+
+      <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
+        <h2 className="font-display text-xl tracking-wider">Brand</h2>
+        <ImageUpload
+          folder="logo"
+          label="Site Logo"
+          value={logoUrl}
+          onChange={setLogoUrl}
+          recommendedSize="400×400"
+          recommendedDimensions="1:1 square (transparent PNG)"
+          maxSizeMB={1}
+        />
+      </section>
+
       <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
         <h2 className="font-display text-xl tracking-wider">Company</h2>
         <FormField label="Company Name" error={err.companyName?.[0]}>

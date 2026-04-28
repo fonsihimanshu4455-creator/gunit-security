@@ -48,6 +48,9 @@ model SiteSettings {
   tagline           String?
   subtitle          String?
   description       String?
+  // Site logo (PNG with transparent background works best). Used in
+  // navbar + footer. Falls back to the text wordmark when null.
+  logoUrl           String?
   phone             String
   email             String
   generalEmail      String?

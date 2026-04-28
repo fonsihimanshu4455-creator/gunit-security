@@ -15,7 +15,13 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Navbar() {
+export function Navbar({
+  logoUrl,
+  companyName,
+}: {
+  logoUrl?: string | null;
+  companyName?: string | null;
+}) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,11 +46,22 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8 h-[72px] flex items-center justify-between">
-        <Link href="/" className="font-display text-2xl tracking-[3px]">
-          <span className="brand-gradient-text">G UNIT</span>
-          <span className="text-off-white/80 ml-2 text-sm tracking-[4px] font-body font-medium">
-            SECURITY
-          </span>
+        <Link href="/" className="flex items-center gap-3">
+          {logoUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={logoUrl}
+              alt={companyName ?? "G-Unit Security"}
+              className="h-10 md:h-12 w-auto object-contain"
+            />
+          ) : (
+            <span className="font-display text-2xl tracking-[3px]">
+              <span className="brand-gradient-text">G UNIT</span>
+              <span className="text-off-white/80 ml-2 text-sm tracking-[4px] font-body font-medium">
+                SECURITY
+              </span>
+            </span>
+          )}
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
