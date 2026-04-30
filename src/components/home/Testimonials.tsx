@@ -1,7 +1,11 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import type { Testimonial } from "@prisma/client";
 import { SectionLabel } from "@/components/shared/SectionLabel";
-import { Reveal, RevealStagger } from "@/components/shared/Reveal";
+import { Reveal } from "@/components/shared/Reveal";
 
 function initials(name: string) {
   return name
@@ -13,8 +17,14 @@ function initials(name: string) {
 }
 
 export function Testimonials({ items }: { items: Testimonial[] }) {
+  const [paused, setPaused] = useState(false);
+  if (items.length === 0) return null;
+
+  // Triple the list so the loop seam isn't visible at any viewport width.
+  const cards = [...items, ...items, ...items];
+
   return (
-    <section className="py-32 bg-near-black">
+    <section className="py-32 bg-near-black overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <Reveal className="text-center max-w-2xl mx-auto mb-20 space-y-6">
           <SectionLabel>Client Testimonials</SectionLabel>
@@ -22,22 +32,45 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
             Words From <span className="brand-gradient-text">Our Clients</span>
           </h2>
         </Reveal>
+      </div>
 
-        <RevealStagger
-          stagger={0.1}
-          className="grid grid-cols-1 md:grid-cols-3 gap-5"
+      <div
+        className="relative"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        {/* Edge fades so the cards melt in/out of view */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-r from-near-black to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-l from-near-black to-transparent z-10 pointer-events-none" />
+
+        <motion.div
+          // Right-to-left scroll: animate from -50% back to 0% on a loop.
+          // The triple list makes the seam invisible.
+          animate={{ x: ["-50%", "0%"] }}
+          transition={{
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: paused ? 9999 : 60,
+              ease: "linear",
+            },
+          }}
+          className="flex gap-5 items-stretch w-max"
         >
-          {items.slice(0, 6).map((t) => (
-            <article key={t.id} className="relative card-luxury rounded-2xl p-8">
+          {cards.map((t, i) => (
+            <article
+              key={`${t.id}-${i}`}
+              className="relative card-luxury rounded-2xl p-8 w-[340px] md:w-[400px] flex-shrink-0 flex flex-col"
+            >
               <span className="absolute top-3 right-6 font-display text-8xl text-gold-accent/15 leading-none">
                 &ldquo;
               </span>
               <div className="flex items-center gap-1 mb-5">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-gold-accent text-gold-accent" />
+                {Array.from({ length: t.rating }).map((_, idx) => (
+                  <Star key={idx} className="w-4 h-4 fill-gold-accent text-gold-accent" />
                 ))}
               </div>
-              <p className="text-off-white/85 text-sm leading-relaxed mb-7 relative font-serif italic text-base">
+              <p className="text-off-white/85 leading-relaxed mb-7 relative font-serif italic flex-1">
                 {t.quote}
               </p>
               <div className="flex items-center gap-3 pt-5 border-t border-white/8">
@@ -63,7 +96,7 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
               </div>
             </article>
           ))}
-        </RevealStagger>
+        </motion.div>
       </div>
     </section>
   );
