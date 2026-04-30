@@ -47,7 +47,7 @@ export default async function HomePage() {
       <OrnamentDivider />
       <QuoteSection />
       <TeamPreview team={team} />
-      <Testimonials items={testimonials} />
+      <Testimonials items={testimonials} settings={settings} />
       <CTASection settings={settings} />
     </>
   );

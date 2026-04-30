@@ -31,6 +31,9 @@ const schema = z.object({
   marqueePauseOnHover: z.coerce.boolean().default(true),
   logoMaxWidth: z.coerce.number().int().min(40).max(400).default(150),
   logoMaxHeight: z.coerce.number().int().min(20).max(200).default(80),
+  testimonialSpeed: z.coerce.number().int().min(10).max(180).default(60),
+  testimonialDirection: z.enum(["left", "right"]).default("left"),
+  testimonialPauseOnHover: z.coerce.boolean().default(true),
 });
 
 export type SettingsFormState = {
@@ -76,6 +79,9 @@ export async function updateSettings(
     marqueePauseOnHover: formData.get("marqueePauseOnHover") === "on",
     logoMaxWidth: formData.get("logoMaxWidth") ?? 150,
     logoMaxHeight: formData.get("logoMaxHeight") ?? 80,
+    testimonialSpeed: formData.get("testimonialSpeed") ?? 60,
+    testimonialDirection: formData.get("testimonialDirection") ?? "left",
+    testimonialPauseOnHover: formData.get("testimonialPauseOnHover") === "on",
   });
 
   if (!parsed.success) {
@@ -112,6 +118,9 @@ export async function updateSettings(
     marqueePauseOnHover: parsed.data.marqueePauseOnHover,
     logoMaxWidth: parsed.data.logoMaxWidth,
     logoMaxHeight: parsed.data.logoMaxHeight,
+    testimonialSpeed: parsed.data.testimonialSpeed,
+    testimonialDirection: parsed.data.testimonialDirection,
+    testimonialPauseOnHover: parsed.data.testimonialPauseOnHover,
   };
 
   const existing = await prisma.siteSettings.findFirst();

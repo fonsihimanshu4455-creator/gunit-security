@@ -267,6 +267,50 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
         </FormField>
       </section>
 
+      <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
+        <h2 className="font-display text-xl tracking-wider">Testimonials Marquee</h2>
+        <p className="text-xs text-gray-mid -mt-2">
+          Controls the scrolling client testimonials section on the homepage.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <FormField
+            label="Speed (seconds per loop)"
+            error={err.testimonialSpeed?.[0]}
+            hint="Lower = faster. 60 is the default cinematic pace."
+          >
+            <input
+              type="number"
+              name="testimonialSpeed"
+              min={10}
+              max={180}
+              defaultValue={initial?.testimonialSpeed ?? 60}
+              className={inputClass}
+            />
+          </FormField>
+          <FormField label="Direction" error={err.testimonialDirection?.[0]}>
+            <select
+              name="testimonialDirection"
+              defaultValue={initial?.testimonialDirection ?? "left"}
+              className={inputClass}
+            >
+              <option value="left">Right → Left (cards flow leftward)</option>
+              <option value="right">Left → Right (cards flow rightward)</option>
+            </select>
+          </FormField>
+        </div>
+        <FormField label="Pause on hover">
+          <label className="flex items-center gap-2 h-[42px]">
+            <input
+              type="checkbox"
+              name="testimonialPauseOnHover"
+              defaultChecked={initial?.testimonialPauseOnHover ?? true}
+              className="w-4 h-4 accent-red-bright"
+            />
+            <span className="text-sm">Stop scrolling when the user hovers a testimonial</span>
+          </label>
+        </FormField>
+      </section>
+
       <div className="flex items-center gap-4">
         <Button type="submit" disabled={isPending}>
           <Save className="w-3.5 h-3.5" />

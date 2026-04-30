@@ -75,6 +75,11 @@ model SiteSettings {
   marqueePauseOnHover Boolean @default(true)
   logoMaxWidth     Int      @default(150)
   logoMaxHeight    Int      @default(80)
+  // Testimonial marquee controls (separate so admin can tune the two
+  // independently)
+  testimonialSpeed       Int     @default(60)
+  testimonialDirection   String  @default("left")
+  testimonialPauseOnHover Boolean @default(true)
   updatedAt         DateTime @updatedAt
 }
 

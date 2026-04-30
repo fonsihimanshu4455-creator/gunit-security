@@ -3,9 +3,20 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import type { Testimonial } from "@prisma/client";
+import type { SiteSettings, Testimonial } from "@prisma/client";
 import { SectionLabel } from "@/components/shared/SectionLabel";
 import { Reveal } from "@/components/shared/Reveal";
+
+type MarqueeSettings = Pick<
+  SiteSettings,
+  "testimonialSpeed" | "testimonialDirection" | "testimonialPauseOnHover"
+>;
+
+const DEFAULTS: MarqueeSettings = {
+  testimonialSpeed: 60,
+  testimonialDirection: "left",
+  testimonialPauseOnHover: true,
+};
 
 function initials(name: string) {
   return name
@@ -16,12 +27,24 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-export function Testimonials({ items }: { items: Testimonial[] }) {
+export function Testimonials({
+  items,
+  settings,
+}: {
+  items: Testimonial[];
+  settings?: MarqueeSettings | null;
+}) {
+  const cfg = { ...DEFAULTS, ...(settings ?? {}) };
   const [paused, setPaused] = useState(false);
   if (items.length === 0) return null;
 
   // Triple the list so the loop seam isn't visible at any viewport width.
   const cards = [...items, ...items, ...items];
+
+  // direction "left"  → cards flow leftward (right-to-left reading): x: 0 → -50%
+  // direction "right" → cards flow rightward (left-to-right reading): x: -50% → 0%
+  const animateX =
+    cfg.testimonialDirection === "right" ? ["-50%", "0%"] : ["0%", "-50%"];
 
   return (
     <section className="py-32 bg-near-black overflow-hidden">
@@ -36,22 +59,19 @@ export function Testimonials({ items }: { items: Testimonial[] }) {
 
       <div
         className="relative"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        onMouseEnter={() => cfg.testimonialPauseOnHover && setPaused(true)}
+        onMouseLeave={() => cfg.testimonialPauseOnHover && setPaused(false)}
       >
-        {/* Edge fades so the cards melt in/out of view */}
         <div className="absolute left-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-r from-near-black to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-24 md:w-40 bg-gradient-to-l from-near-black to-transparent z-10 pointer-events-none" />
 
         <motion.div
-          // Right-to-left scroll: animate from -50% back to 0% on a loop.
-          // The triple list makes the seam invisible.
-          animate={{ x: ["-50%", "0%"] }}
+          animate={{ x: animateX }}
           transition={{
             x: {
               repeat: Infinity,
               repeatType: "loop",
-              duration: paused ? 9999 : 60,
+              duration: paused ? 9999 : cfg.testimonialSpeed,
               ease: "linear",
             },
           }}
