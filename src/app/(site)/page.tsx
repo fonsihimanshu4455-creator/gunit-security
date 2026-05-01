@@ -8,6 +8,7 @@ import { CoverageMapLoader } from "@/components/home/CoverageMapLoader";
 import { QuoteSection } from "@/components/home/QuoteSection";
 import { TeamPreview } from "@/components/home/TeamPreview";
 import { Testimonials } from "@/components/home/Testimonials";
+import { GForceTrinity } from "@/components/home/GForceTrinity";
 import { CTASection } from "@/components/home/CTASection";
 import { OrnamentDivider } from "@/components/shared/OrnamentDivider";
 import {
@@ -48,6 +49,7 @@ export default async function HomePage() {
       <QuoteSection />
       <TeamPreview team={team} />
       <Testimonials items={testimonials} settings={settings} />
+      <GForceTrinity />
       <CTASection settings={settings} />
     </>
   );
