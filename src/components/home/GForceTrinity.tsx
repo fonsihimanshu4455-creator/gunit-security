@@ -58,7 +58,15 @@ const TRUST_POINTS = [
   "Complete peace of mind",
 ];
 
-export function GForceTrinity() {
+export function GForceTrinity({
+  imageUrl,
+  imageWidth,
+}: {
+  imageUrl?: string | null;
+  imageWidth?: number | null;
+}) {
+  const src = imageUrl || "/g-force-trinity.png";
+  const maxWidth = imageWidth ?? 480;
   return (
     <section className="py-24 bg-near-black/50 border-y border-white/8">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
@@ -116,9 +124,10 @@ export function GForceTrinity() {
               <div className="absolute inset-8 bg-blue-primary/10 rounded-full blur-3xl pointer-events-none" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/g-force-trinity.png"
+                src={src}
                 alt="G-Force Trinity app — Live Tracking, dashboard, and Report Details screens"
-                className="relative w-full h-full max-w-md mx-auto object-contain"
+                style={{ maxWidth: `${maxWidth}px` }}
+                className="relative w-full h-full mx-auto object-contain"
               />
             </div>
           </Reveal>

@@ -49,7 +49,10 @@ export default async function HomePage() {
       <QuoteSection />
       <TeamPreview team={team} />
       <Testimonials items={testimonials} settings={settings} />
-      <GForceTrinity />
+      <GForceTrinity
+        imageUrl={settings?.gforceImageUrl}
+        imageWidth={settings?.gforceImageWidth}
+      />
       <CTASection settings={settings} />
     </>
   );

@@ -53,6 +53,12 @@ model SiteSettings {
   logoUrl           String?
   // Display height of the site logo in pixels (in both navbar + footer).
   logoHeight        Int      @default(48)
+  // Browser tab favicon — square PNG / ICO, ~64×64 ideal.
+  faviconUrl        String?
+  // G-Force Trinity homepage section image (3-phone mockup).
+  gforceImageUrl    String?
+  // Display max-width of the G-Force image in pixels.
+  gforceImageWidth  Int      @default(480)
   phone             String
   email             String
   generalEmail      String?

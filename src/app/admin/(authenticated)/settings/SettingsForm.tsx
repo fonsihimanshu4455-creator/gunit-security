@@ -14,6 +14,9 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
   const [state, formAction, isPending] = useActionState(updateSettings, initialState);
   const [logoUrl, setLogoUrl] = useState(initial?.logoUrl ?? null);
   const [logoHeight, setLogoHeight] = useState(initial?.logoHeight ?? 48);
+  const [faviconUrl, setFaviconUrl] = useState(initial?.faviconUrl ?? null);
+  const [gforceImageUrl, setGforceImageUrl] = useState(initial?.gforceImageUrl ?? null);
+  const [gforceImageWidth, setGforceImageWidth] = useState(initial?.gforceImageWidth ?? 480);
   const err = state.fieldErrors ?? {};
 
   return (
@@ -61,6 +64,92 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
                 alt="Preview"
                 style={{ height: `${logoHeight}px` }}
                 className="w-auto object-contain"
+              />
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
+        <h2 className="font-display text-xl tracking-wider">Favicon</h2>
+        <p className="text-xs text-gray-mid -mt-2">
+          Browser-tab icon. Square PNG / ICO works best (~64×64).
+        </p>
+        <input type="hidden" name="faviconUrl" value={faviconUrl ?? ""} />
+        <ImageUpload
+          folder="logo"
+          label="Browser Tab Icon"
+          value={faviconUrl}
+          onChange={setFaviconUrl}
+          recommendedSize="64×64"
+          recommendedDimensions="1:1 square (PNG or ICO)"
+          maxSizeMB={0.5}
+        />
+        {faviconUrl && (
+          <div className="bg-navy-deep border border-navy-light rounded-lg p-5">
+            <p className="text-[10px] tracking-[3px] uppercase text-gray-mid mb-3">
+              Live Preview
+            </p>
+            <div className="bg-pure-black border border-white/8 rounded-lg p-4 flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={faviconUrl}
+                alt="Favicon preview"
+                className="w-8 h-8 object-contain"
+              />
+              <span className="text-xs text-gray-mid">
+                Renders at this size in the browser tab.
+              </span>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
+        <h2 className="font-display text-xl tracking-wider">G-Force Trinity App Image</h2>
+        <p className="text-xs text-gray-mid -mt-2">
+          The 3-phone mockup shown in the homepage &ldquo;Smart Monitoring&rdquo; section.
+        </p>
+        <input type="hidden" name="gforceImageUrl" value={gforceImageUrl ?? ""} />
+        <ImageUpload
+          folder="general"
+          label="App Showcase Image"
+          value={gforceImageUrl}
+          onChange={setGforceImageUrl}
+          recommendedSize="1200×900"
+          recommendedDimensions="4:3 landscape (transparent PNG preferred)"
+          maxSizeMB={2}
+        />
+
+        <input type="hidden" name="gforceImageWidth" value={gforceImageWidth} />
+        <FormField
+          label={`Display max-width: ${gforceImageWidth}px`}
+          error={err.gforceImageWidth?.[0]}
+          hint="Caps how large the mockup renders on desktop. 480px is the calm default; bump up for a bolder hero."
+        >
+          <input
+            type="range"
+            min={160}
+            max={900}
+            step={20}
+            value={gforceImageWidth}
+            onChange={(e) => setGforceImageWidth(Number(e.target.value))}
+            className="w-full accent-red-bright"
+          />
+        </FormField>
+
+        {gforceImageUrl && (
+          <div className="bg-navy-deep border border-navy-light rounded-lg p-5">
+            <p className="text-[10px] tracking-[3px] uppercase text-gray-mid mb-3">
+              Live Preview
+            </p>
+            <div className="bg-pure-black border border-white/8 rounded-lg p-4 flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={gforceImageUrl}
+                alt="G-Force Trinity preview"
+                style={{ maxWidth: `${gforceImageWidth}px` }}
+                className="w-full h-auto object-contain"
               />
             </div>
           </div>
