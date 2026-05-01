@@ -40,7 +40,7 @@ export default async function HomePage() {
       <TrustBar partners={partners} settings={settings} />
       <ServicesGrid services={services} />
       <OrnamentDivider />
-      <WhyUs />
+      <WhyUs logoUrl={settings?.logoUrl} companyName={settings?.companyName} />
       <IndustriesSection industries={industries} />
       <CoverageMapLoader />
       <LiveStats />
