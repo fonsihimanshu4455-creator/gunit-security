@@ -400,6 +400,39 @@ export function SettingsForm({ initial }: { initial: SiteSettings | null }) {
         </FormField>
       </section>
 
+      <section className="bg-navy-rich border border-navy-light rounded-2xl p-6 space-y-5">
+        <h2 className="font-display text-xl tracking-wider">SEO &amp; Search Engines</h2>
+        <p className="text-xs text-gray-mid -mt-2">
+          Verify domain ownership with Google Search Console and Bing Webmaster
+          Tools. Paste only the <code className="text-off-white/80">content</code>{" "}
+          value of the verification meta tag — not the full HTML.
+        </p>
+        <FormField
+          label="Google Search Console verification"
+          error={err.googleSiteVerification?.[0]}
+          hint='From Search Console → Settings → Ownership verification → HTML tag. Paste only the content value.'
+        >
+          <input
+            name="googleSiteVerification"
+            defaultValue={initial?.googleSiteVerification ?? ""}
+            placeholder="abc123…"
+            className={inputClass}
+          />
+        </FormField>
+        <FormField
+          label="Bing Webmaster verification"
+          error={err.bingSiteVerification?.[0]}
+          hint="From Bing Webmaster Tools → Site verification → Meta tag (msvalidate.01)."
+        >
+          <input
+            name="bingSiteVerification"
+            defaultValue={initial?.bingSiteVerification ?? ""}
+            placeholder="abc123…"
+            className={inputClass}
+          />
+        </FormField>
+      </section>
+
       <div className="flex items-center gap-4">
         <Button type="submit" disabled={isPending}>
           <Save className="w-3.5 h-3.5" />

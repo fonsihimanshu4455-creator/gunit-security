@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { getCoreValues, getSiteSettings } from "@/lib/site-data";
@@ -6,12 +5,15 @@ import { resolveIcon } from "@/lib/icons";
 import { PageHero } from "@/components/shared/PageHero";
 import { SectionLabel } from "@/components/shared/SectionLabel";
 import { CTASection } from "@/components/home/CTASection";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About Us",
+export const metadata = buildMetadata({
+  title: "About G-Unit Security — 15+ Years Protecting Perth WA",
   description:
-    "G-Unit Security — privately owned Western Australian security firm focused on operational reliability, strong supervision, and quality recruitment.",
-};
+    "Privately owned Western Australian security firm trusted by councils, hotels and venues across Perth. 15+ years of operational experience, $20M insured, fully licensed by WA Police.",
+  path: "/about",
+});
 
 export const revalidate = 600;
 
@@ -74,6 +76,12 @@ export default async function AboutPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "About", path: "/about" },
+        ])}
+      />
       <PageHero
         title={
           <>

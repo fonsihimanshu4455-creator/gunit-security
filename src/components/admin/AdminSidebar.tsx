@@ -16,6 +16,7 @@ import {
   Inbox,
   Briefcase,
   Eye,
+  Newspaper,
 } from "lucide-react";
 
 const adminLinks = [
@@ -23,6 +24,7 @@ const adminLinks = [
   { href: "/admin/settings", label: "Site Settings", icon: Settings },
   { href: "/admin/services", label: "Services", icon: Shield },
   { href: "/admin/industries", label: "Industries", icon: Building2 },
+  { href: "/admin/blog", label: "Blog Posts", icon: Newspaper },
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { href: "/admin/core-values", label: "Core Values", icon: HeartHandshake },
   { href: "/admin/hero-slides", label: "Hero Slides", icon: ImageIcon },

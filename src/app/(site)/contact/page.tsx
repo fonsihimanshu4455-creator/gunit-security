@@ -1,14 +1,17 @@
-import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { getSiteSettings } from "@/lib/site-data";
 import { PageHero } from "@/components/shared/PageHero";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { QuoteCalculator } from "@/components/forms/QuoteCalculator";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch with G Unit Security. 24/7 emergency response. Based in Mirrabooka, WA.",
-};
+export const metadata = buildMetadata({
+  title: "Contact G-Unit Security Perth — 24/7 Emergency Response",
+  description:
+    "Call +61 426 842 606 or email info@gunitsecurity.com.au. Head office in Mirrabooka, Western Australia. 24/7 emergency response, office hours Mon–Fri 9am–6pm.",
+  path: "/contact",
+});
 
 export const revalidate = 600;
 
@@ -74,6 +77,12 @@ export default async function ContactPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
       <PageHero
         title={
           <>

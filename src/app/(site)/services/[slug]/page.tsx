@@ -10,6 +10,8 @@ import {
 import { resolveIcon } from "@/lib/icons";
 import { PageHero } from "@/components/shared/PageHero";
 import { CTASection } from "@/components/home/CTASection";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, buildMetadata, serviceJsonLd } from "@/lib/seo";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -41,10 +43,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
   if (!service) return {};
-  return {
-    title: service.title,
+  return buildMetadata({
+    title: `${service.title} — Perth WA`,
     description: service.shortDesc,
-  };
+    path: `/services/${service.slug}`,
+    image: service.imageUrl,
+  });
 }
 
 export default async function ServiceDetailPage({
@@ -66,6 +70,21 @@ export default async function ServiceDetailPage({
 
   return (
     <>
+      <JsonLd
+        data={[
+          serviceJsonLd({
+            name: service.title,
+            description: service.longDesc || service.shortDesc,
+            slug: service.slug,
+            imageUrl: service.imageUrl,
+          }),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Services", path: "/services" },
+            { name: service.title, path: `/services/${service.slug}` },
+          ]),
+        ]}
+      />
       <PageHero
         title={service.title}
         subtitle={service.shortDesc}

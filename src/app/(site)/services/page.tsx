@@ -1,16 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getPublishedServices, getSiteSettings } from "@/lib/site-data";
 import { resolveIcon } from "@/lib/icons";
 import { PageHero } from "@/components/shared/PageHero";
 import { CTASection } from "@/components/home/CTASection";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Services",
+export const metadata = buildMetadata({
+  title: "Security Services in Perth WA — VIP Protection, Crowd Control, CCTV",
   description:
-    "Premium security services from G Unit Security — VIP protection, crowd control, CCTV, mobile patrols, canine security and more. Perth WA.",
-};
+    "Eight tailored security services across Perth and Western Australia: VIP protection, crowd control, CCTV monitoring, mobile patrols, canine security, financial escorts, concierge and licensed guards. Fully licensed, $20M insured.",
+  path: "/services",
+});
 
 export const revalidate = 300;
 
@@ -19,6 +21,12 @@ export default async function ServicesPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+        ])}
+      />
       <PageHero
         title={
           <>

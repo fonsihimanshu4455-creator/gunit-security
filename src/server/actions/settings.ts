@@ -37,6 +37,8 @@ const schema = z.object({
   testimonialSpeed: z.coerce.number().int().min(10).max(180).default(60),
   testimonialDirection: z.enum(["left", "right"]).default("left"),
   testimonialPauseOnHover: z.coerce.boolean().default(true),
+  googleSiteVerification: z.string().optional(),
+  bingSiteVerification: z.string().optional(),
 });
 
 export type SettingsFormState = {
@@ -88,6 +90,8 @@ export async function updateSettings(
     testimonialSpeed: formData.get("testimonialSpeed") ?? 60,
     testimonialDirection: formData.get("testimonialDirection") ?? "left",
     testimonialPauseOnHover: formData.get("testimonialPauseOnHover") === "on",
+    googleSiteVerification: formData.get("googleSiteVerification") ?? undefined,
+    bingSiteVerification: formData.get("bingSiteVerification") ?? undefined,
   });
 
   if (!parsed.success) {
@@ -130,6 +134,8 @@ export async function updateSettings(
     testimonialSpeed: parsed.data.testimonialSpeed,
     testimonialDirection: parsed.data.testimonialDirection,
     testimonialPauseOnHover: parsed.data.testimonialPauseOnHover,
+    googleSiteVerification: nullIfEmpty(formData.get("googleSiteVerification")),
+    bingSiteVerification: nullIfEmpty(formData.get("bingSiteVerification")),
   };
 
   const existing = await prisma.siteSettings.findFirst();

@@ -86,6 +86,11 @@ model SiteSettings {
   testimonialSpeed       Int     @default(60)
   testimonialDirection   String  @default("left")
   testimonialPauseOnHover Boolean @default(true)
+  // SEO / search-engine ownership verification meta tags. Pasted by the
+  // admin from Google Search Console / Bing Webmaster — just the
+  // `content` value of the verification meta tag.
+  googleSiteVerification String?
+  bingSiteVerification   String?
   updatedAt         DateTime @updatedAt
 }
 
@@ -232,4 +237,34 @@ model CareerApplication {
 
   @@index([status])
   @@index([createdAt])
+}
+
+// Editorial blog posts — drives long-tail SEO traffic. Stored as
+// markdown-ish text (the public renderer treats blank lines as
+// paragraphs and supports basic <h2>/<h3>/<ul> blocks).
+model BlogPost {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String
+  // Long-form body. Rendered with whitespace-pre-line + naive markdown
+  // headings/lists by the BlogPostBody component.
+  content     String
+  coverUrl    String?
+  category    String?
+  // Comma-separated tags (kept simple — Postgres String[] is fine but
+  // the admin UI just edits a single text field).
+  tags        String?
+  // Optional SEO overrides; fall back to title/excerpt if blank.
+  metaTitle       String?
+  metaDescription String?
+  authorName  String?
+  readMinutes Int       @default(5)
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published])
+  @@index([publishedAt])
 }

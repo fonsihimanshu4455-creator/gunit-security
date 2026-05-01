@@ -1,16 +1,18 @@
-import type { Metadata } from "next";
 import { Shield, GraduationCap, TrendingUp, Heart } from "lucide-react";
 import { PageHero } from "@/components/shared/PageHero";
 import { SectionLabel } from "@/components/shared/SectionLabel";
 import { ApplicationForm } from "@/components/forms/ApplicationForm";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
-export const metadata: Metadata = {
-  title: "Careers",
+export const metadata = buildMetadata({
+  title: "Security Careers in Perth — Join G-Unit Security",
   description:
-    "Join G Unit Security — Perth's premier security firm. Licensed, insured, and looking for disciplined professionals to join our ranks.",
-};
+    "Join Perth's premier security firm. Licensed roles in patrols, crowd control, CCTV monitoring, VIP protection and concierge security across Western Australia. Continuous training, competitive pay, $20M-insured employer.",
+  path: "/career",
+});
 
 const benefits = [
   {
@@ -38,6 +40,12 @@ const benefits = [
 export default function CareerPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Careers", path: "/career" },
+        ])}
+      />
       <PageHero
         title={
           <>

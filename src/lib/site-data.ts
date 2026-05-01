@@ -1,5 +1,6 @@
 import { cache } from "react";
 import type {
+  BlogPost,
   CoreValue,
   HeroSlide,
   Industry,
@@ -120,5 +121,28 @@ export const getActiveTeamMembers = cache(async (): Promise<TeamMember[]> =>
       }),
     [],
     "getActiveTeamMembers"
+  )
+);
+
+export const getPublishedBlogPosts = cache(async (): Promise<BlogPost[]> =>
+  safe(
+    () =>
+      prisma.blogPost.findMany({
+        where: { published: true },
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+      }),
+    [],
+    "getPublishedBlogPosts"
+  )
+);
+
+export const getBlogPostBySlug = cache(async (slug: string): Promise<BlogPost | null> =>
+  safe(
+    () =>
+      prisma.blogPost.findFirst({
+        where: { slug, published: true },
+      }),
+    null,
+    `getBlogPostBySlug(${slug})`
   )
 );

@@ -1,16 +1,18 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import { Mail, Phone } from "lucide-react";
 import { getActiveTeamMembers, getSiteSettings } from "@/lib/site-data";
 import { PageHero } from "@/components/shared/PageHero";
 import { SectionLabel } from "@/components/shared/SectionLabel";
 import { CTASection } from "@/components/home/CTASection";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Our Team",
+export const metadata = buildMetadata({
+  title: "Our Team — Leadership Behind G-Unit Security Perth",
   description:
-    "Meet the leadership behind G-Unit Security — director, business development, operations, scheduling and client services.",
-};
+    "Meet the leadership behind G-Unit Security — director, business development, operations, scheduling and client services across Perth WA.",
+  path: "/team",
+});
 
 export const revalidate = 300;
 
@@ -31,6 +33,12 @@ export default async function TeamPage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Team", path: "/team" },
+        ])}
+      />
       <PageHero
         title={
           <>
