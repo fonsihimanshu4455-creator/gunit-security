@@ -100,9 +100,15 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: [ogImage],
     },
-    icons: settings?.faviconUrl
-      ? { icon: settings.faviconUrl, shortcut: settings.faviconUrl, apple: settings.faviconUrl }
-      : undefined,
+    icons: (() => {
+      // Browser tab icon. Prefer the dedicated favicon, but fall back to
+      // the site logo so we never serve a default Next/Vercel mark — the
+      // app/favicon.ico file is intentionally removed.
+      const iconUrl = settings?.faviconUrl ?? settings?.logoUrl;
+      return iconUrl
+        ? { icon: iconUrl, shortcut: iconUrl, apple: iconUrl }
+        : undefined;
+    })(),
     verification: {
       google: settings?.googleSiteVerification ?? undefined,
       other: settings?.bingSiteVerification
