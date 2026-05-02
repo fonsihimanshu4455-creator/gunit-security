@@ -39,6 +39,7 @@ export default async function HomePage() {
     <>
       <Hero slides={slides} />
       <TrustBar partners={partners} settings={settings} />
+      <Testimonials items={testimonials} settings={settings} />
       <ServicesGrid services={services} />
       <OrnamentDivider />
       <WhyUs logoUrl={settings?.logoUrl} companyName={settings?.companyName} />
@@ -48,7 +49,6 @@ export default async function HomePage() {
       <OrnamentDivider />
       <QuoteSection />
       <TeamPreview team={team} />
-      <Testimonials items={testimonials} settings={settings} />
       <GForceTrinity
         imageUrl={settings?.gforceImageUrl}
         imageWidth={settings?.gforceImageWidth}
