@@ -106,7 +106,7 @@ export function WhyUs({
               <div>
                 <h4 className="font-display text-xl tracking-wider">Western Australian</h4>
                 <p className="text-xs text-gray-mid mt-0.5">
-                  Privately owned and locally operated since 2024.
+                  Privately owned and locally operated since 2022.
                 </p>
               </div>
             </div>

@@ -10,7 +10,9 @@ Project context for Claude Code. Read this before making changes so tone, design
 - **Type**: Premium security services company
 - **Location**: Perth, Western Australia (WA, Australia)
 - **Head Office**: PO BOX 254, Mirrabooka, WA 6941
-- **Established**: 15+ years in operation (since ~2010)
+- **Established**: 2022 (do NOT claim "15+ years" or "since 2010" — those were old website copy)
+- **Origin Story**: Spun out of a truck & car rental business — that
+  operational/logistics background carried into the security firm.
 - **Old website being replaced**: gunitsecurity.com.au (outdated PHP site)
 
 ## Contact Information (keep consistent on every page)
@@ -25,7 +27,8 @@ Project context for Claude Code. Read this before making changes so tone, design
 - **$20 Million** Public & Professional Indemnity Insurance
 - Fully Licensed by Western Australia
 - Strong ties with WA Police & Liquor Enforcement Unit
-- 500+ clients served
+- **60+** licensed officers on roster
+- **8,000+** service hours per month
 - 24/7 response ready
 
 ## 8 Services Offered (core business)

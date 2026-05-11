@@ -9,19 +9,19 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
-  title: "About G-Unit Security — 15+ Years Protecting Perth WA",
+  title: "About G-Unit Security — Locally Owned WA Security Firm",
   description:
-    "Privately owned Western Australian security firm trusted by councils, hotels and venues across Perth. 15+ years of operational experience, $20M insured, fully licensed by WA Police.",
+    "Privately owned Western Australian security firm covering 8,000+ service hours per month with 60+ licensed officers on roster. $20M insured, fully licensed by WA, trusted across Perth.",
   path: "/about",
 });
 
 export const revalidate = 600;
 
 const stats = [
-  { value: "Since 2024", label: "Established WA" },
-  { value: "8", label: "Specialised Services" },
+  { value: "Since 2022", label: "Established WA" },
+  { value: "60+", label: "Licensed Officers" },
+  { value: "8,000+", label: "Service Hours / Month" },
   { value: "24/7", label: "Communication" },
-  { value: "100%", label: "Licensed Officers" },
 ];
 
 const operatingFactors = [
@@ -102,7 +102,7 @@ export default async function AboutPage() {
                 Since
               </p>
               <p className="font-display text-[180px] leading-none brand-gradient-text tracking-wider">
-                2024
+                2022
               </p>
               <p className="text-xs tracking-[5px] text-off-white/70 uppercase mt-4">
                 Western Australia
@@ -120,9 +120,17 @@ export default async function AboutPage() {
                 "G-Unit Security is a privately owned Western Australian company focused on delivering dependable, professional, and structured security solutions across Perth and its environs."}
             </p>
             <p className="text-gray-mid leading-relaxed">
-              We prioritise operational reliability over uncontrolled growth — the right officer
-              on the right site, supported by structured procedures and active supervision. That
-              focus is why our clients choose us and stay with us.
+              We began in 2022 — our roots in the truck and car rental business taught us how
+              logistics, accountability, and round-the-clock reliability shape a service. We
+              brought that operational discipline into security and built G-Unit on the same
+              foundation: people you can count on, every shift.
+            </p>
+            <p className="text-gray-mid leading-relaxed">
+              Today the company covers more than 8,000 service hours every month with 60+
+              licensed officers on roster — and we prioritise operational reliability over
+              uncontrolled growth. The right officer on the right site, supported by structured
+              procedures and active supervision. That focus is why our clients choose us and
+              stay with us.
             </p>
             <Link
               href="/contact"

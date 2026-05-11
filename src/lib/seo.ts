@@ -91,7 +91,7 @@ export function organizationJsonLd(settings: SiteSettings | null) {
     image: logo,
     telephone: phone,
     email,
-    foundingDate: "2010",
+    foundingDate: "2022",
     address: {
       "@type": "PostalAddress",
       ...COMPANY_ADDRESS,

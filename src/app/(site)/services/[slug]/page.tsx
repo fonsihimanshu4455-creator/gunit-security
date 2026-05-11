@@ -163,7 +163,8 @@ export default async function ServiceDetailPage({
                 {[
                   "Fully licensed by WA",
                   "$20M Public & Professional Indemnity",
-                  "15+ years of operational experience",
+                  "60+ licensed officers on roster",
+                  "8,000+ service hours per month",
                   "24/7 rapid response ready",
                 ].map((point) => (
                   <li key={point} className="flex items-start gap-2.5 text-sm text-off-white/80">

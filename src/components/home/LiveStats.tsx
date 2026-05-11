@@ -18,20 +18,21 @@ type Stat = {
 };
 
 const STATS: Stat[] = [
-  { label: "Active Patrols Right Now", baseValue: 12, drift: 3, icon: Activity, accent: "red" },
-  { label: "Sites Protected Today", baseValue: 47, drift: 5, icon: Shield, accent: "blue" },
+  { label: "Active Patrols Right Now", baseValue: 18, drift: 4, icon: Activity, accent: "red" },
+  { label: "Sites Protected Today", baseValue: 62, drift: 6, icon: Shield, accent: "blue" },
   {
     label: "Service Hours This Month",
-    baseValue: 1240,
-    drift: 35,
+    baseValue: 8050,
+    drift: 60,
     suffix: "+",
     icon: Clock,
     accent: "gold",
   },
   {
     label: "Licensed Officers On Roster",
-    baseValue: 35,
+    baseValue: 62,
     drift: 2,
+    suffix: "+",
     icon: Users,
     accent: "red",
   },
