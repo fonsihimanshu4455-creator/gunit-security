@@ -167,23 +167,46 @@ export default async function ContactPage() {
             <h2 className="font-display text-3xl tracking-wider text-center mb-8">
               Find <span className="brand-gradient-text">Our Office</span>
             </h2>
-            <div className="rounded-2xl overflow-hidden border border-white/8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
-              <iframe
-                title="G-Unit Security office on Google Maps"
-                src={resolveMapEmbedUrl(settings?.mapEmbedUrl, settings?.address ?? null)}
-                width="100%"
-                height="420"
-                style={{
-                  border: 0,
-                  filter: "invert(92%) hue-rotate(180deg) brightness(0.95) contrast(1.1)",
-                }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
+            {settings?.mapEmbedUrl ? (
+              // Admin has pasted a Google Maps embed/share URL — render the iframe.
+              <div className="rounded-2xl overflow-hidden border border-white/8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+                <iframe
+                  title="G-Unit Security office on Google Maps"
+                  src={resolveMapEmbedUrl(settings.mapEmbedUrl, settings.address ?? null)}
+                  width="100%"
+                  height="420"
+                  style={{
+                    border: 0,
+                    filter: "invert(92%) hue-rotate(180deg) brightness(0.95) contrast(1.1)",
+                  }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            ) : (
+              // No embed URL set — avoid the unreliable q=…&output=embed fallback
+              // (Google now serves a broken-iframe response for many of these).
+              // Show a clean address card with a one-click 'open in Maps' instead.
+              <a
+                href={directionsUrl(settings?.address ?? null)}
+                target="_blank"
+                rel="noreferrer"
+                className="block rounded-2xl border border-white/8 bg-navy-rich hover:border-red-primary/40 transition p-12 text-center shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-primary/20 to-blue-primary/20 border border-navy-light flex items-center justify-center mx-auto mb-5">
+                  <MapPin className="w-6 h-6 text-red-bright" />
+                </div>
+                <p className="font-display text-2xl tracking-wider mb-2">
+                  {settings?.address ?? "Perth, WA"}
+                </p>
+                <p className="text-gold-bright text-xs tracking-[3px] uppercase">
+                  Open in Google Maps →
+                </p>
+              </a>
+            )}
             <p className="text-center text-gray-mid text-sm mt-4">
-              {settings?.address ?? "36 Brisbane Street, Perth WA 6000"} ·{" "}
+              {settings?.address ?? "Perth, WA"} ·{" "}
               <a
                 href={directionsUrl(settings?.address ?? null)}
                 target="_blank"
