@@ -29,10 +29,11 @@ const STATS: Stat[] = [
     accent: "gold",
   },
   {
+    // Roster size is intentionally a fixed value — the client confirmed the
+    // guard headcount is consistent, so no drift and no "+".
     label: "Licensed Officers On Roster",
-    baseValue: 62,
-    drift: 2,
-    suffix: "+",
+    baseValue: 60,
+    drift: 0,
     icon: Users,
     accent: "red",
   },
@@ -87,10 +88,15 @@ function StatCounter({ stat }: { stat: Stat }) {
     >
       <div className="flex items-start justify-between mb-5">
         <Icon className={`w-5 h-5 ${a.text}`} />
-        <div className="flex items-center gap-1.5">
-          <span className={`w-1.5 h-1.5 rounded-full ${a.dot} animate-pulse`} />
-          <span className="text-[9px] tracking-[3px] uppercase text-off-white/50">Live</span>
-        </div>
+        {stat.drift > 0 && (
+          // Only show the live pulse for stats that actually fluctuate.
+          // Static counts (e.g. fixed roster size) look incongruous with
+          // a flashing 'LIVE' badge.
+          <div className="flex items-center gap-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${a.dot} animate-pulse`} />
+            <span className="text-[9px] tracking-[3px] uppercase text-off-white/50">Live</span>
+          </div>
+        )}
       </div>
       <p className="font-display text-5xl tracking-wider text-off-white">
         {stat.prefix}
