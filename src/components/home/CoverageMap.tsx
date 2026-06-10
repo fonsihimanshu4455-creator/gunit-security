@@ -7,8 +7,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const POINTS = [
-  { name: "Perth CBD", lat: -31.9523, lng: 115.8613, focus: "Commercial guarding" },
-  { name: "Mirrabooka HQ", lat: -31.8753, lng: 115.8632, focus: "Head office" },
+  { name: "Perth CBD", lat: -31.9523, lng: 115.8613, focus: "Head office" },
+  { name: "Mirrabooka", lat: -31.8753, lng: 115.8632, focus: "Commercial guarding" },
   { name: "Joondalup", lat: -31.7448, lng: 115.7681, focus: "Mobile patrols" },
   { name: "Fremantle", lat: -32.0569, lng: 115.7439, focus: "Event security" },
   { name: "Midland", lat: -31.8893, lng: 116.0117, focus: "Construction security" },

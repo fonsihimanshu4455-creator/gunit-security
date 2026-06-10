@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Calendar, Clock, ExternalLink, Facebook, Instagram } from "lucide-react";
+import { ArrowRight, Calendar, Clock, ExternalLink, Facebook, Instagram, Linkedin } from "lucide-react";
 import { getPublishedBlogPosts, getSiteSettings } from "@/lib/site-data";
 import { PageHero } from "@/components/shared/PageHero";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -36,8 +36,10 @@ export default async function BlogPage() {
   ]);
   const igHandle = handleFromUrl(settings?.instagramUrl);
   const fbHandle = handleFromUrl(settings?.facebookUrl);
+  const liHandle = handleFromUrl(settings?.linkedinUrl);
   const igUrl = settings?.instagramUrl || `https://instagram.com/${igHandle}`;
   const fbUrl = settings?.facebookUrl || `https://facebook.com/${fbHandle}`;
+  const liUrl = settings?.linkedinUrl || `https://www.linkedin.com/company/${liHandle}`;
 
   return (
     <>
@@ -145,11 +147,11 @@ export default async function BlogPage() {
               Live <span className="brand-gradient-text">Social</span> Feeds
             </h2>
             <p className="font-serif italic text-base text-off-white/60 mt-4 max-w-xl mx-auto">
-              Live posts from Instagram and Facebook.
+              Follow us on Instagram, Facebook, and LinkedIn.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <article className="card-luxury rounded-2xl p-6 md:p-8">
               <header className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 flex items-center justify-center">
@@ -179,6 +181,14 @@ export default async function BlogPage() {
                   allowTransparency
                 />
               </div>
+              <a
+                href={igUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="block w-full mt-5 py-3 text-center text-xs tracking-[3px] uppercase font-medium rounded-lg bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-white hover:opacity-90 transition"
+              >
+                Follow on Instagram
+              </a>
             </article>
 
             <article className="card-luxury rounded-2xl p-6 md:p-8">
@@ -213,6 +223,60 @@ export default async function BlogPage() {
                   allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                 />
               </div>
+              <a
+                href={fbUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="block w-full mt-5 py-3 text-center text-xs tracking-[3px] uppercase font-medium rounded-lg bg-blue-primary hover:bg-blue-royal text-white transition"
+              >
+                Follow on Facebook
+              </a>
+            </article>
+
+            {/*
+             * LinkedIn no longer offers a public-page iframe widget (their
+             * old company-feed embed was retired). So we render a clean
+             * card matching the IG/FB visual rhythm with a clear CTA.
+             */}
+            <article className="card-luxury rounded-2xl p-6 md:p-8 flex flex-col">
+              <header className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-[#0a66c2] flex items-center justify-center">
+                  <Linkedin className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display text-xl tracking-wider">LinkedIn</h3>
+                  <p className="text-xs text-off-white/55 truncate">@{liHandle}</p>
+                </div>
+                <a
+                  href={liUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-off-white/50 hover:text-gold-bright transition"
+                  aria-label="Open LinkedIn profile"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </header>
+
+              <div className="aspect-square rounded-xl overflow-hidden border border-white/8 bg-gradient-to-br from-[#0a66c2]/15 via-pure-black to-blue-primary/15 flex flex-col items-center justify-center p-8 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-[#0a66c2] flex items-center justify-center mb-5 shadow-[0_10px_30px_-10px_rgba(10,102,194,0.7)]">
+                  <Linkedin className="w-7 h-7 text-white" />
+                </div>
+                <p className="font-display text-2xl tracking-wider mb-2">G-Unit Security</p>
+                <p className="text-sm text-off-white/55 leading-relaxed">
+                  Industry insights, hiring updates, and operational announcements on our
+                  company page.
+                </p>
+              </div>
+
+              <a
+                href={liUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="block w-full mt-5 py-3 text-center text-xs tracking-[3px] uppercase font-medium rounded-lg bg-[#0a66c2] hover:bg-[#085196] text-white transition"
+              >
+                Follow on LinkedIn
+              </a>
             </article>
           </div>
         </div>

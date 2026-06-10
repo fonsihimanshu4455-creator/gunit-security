@@ -16,30 +16,29 @@ export const metadata = buildMetadata({
 export const revalidate = 600;
 
 /**
- * Turn whatever the admin pasted into the Map Link field into something
- * an <iframe> can actually load. Accepts:
- *   - a full Google Maps embed URL (returned as-is)
- *   - a Google Maps share URL like /maps/place/... (we append output=embed)
- *   - a maps.app.goo.gl shortlink (Google handles the redirect inside the iframe)
- *   - a full <iframe ... src="..."> tag pasted from Google Maps "Share → Embed a map"
- *     (we extract the src)
- *   - nothing — fall back to building one from the postal address
+ * The ONLY Google Maps URL form that reliably renders inside an iframe
+ * without an API key is the one Maps produces via "Share → Embed a map":
+ *   https://www.google.com/maps/embed?pb=...
+ * Anything else — search URLs, /maps/place links, maps.app.goo.gl
+ * shortlinks, q=&output=embed hacks — is now rejected by Google with a
+ * broken-document iframe response. So we only return a real embed URL
+ * when we're confident it will load; otherwise the caller falls back to
+ * the clean address card.
  */
-function resolveMapEmbedUrl(input: string | null | undefined, address: string | null): string {
-  if (input && input.trim()) {
-    const value = input.trim();
-    const iframeMatch = value.match(/<iframe[^>]+src=["']([^"']+)["']/i);
-    if (iframeMatch) return iframeMatch[1];
-    if (value.includes("/maps/embed") || value.includes("output=embed")) {
-      return value;
-    }
-    if (/^https?:\/\//i.test(value)) {
-      const sep = value.includes("?") ? "&" : "?";
-      return `${value}${sep}output=embed`;
-    }
+function resolveMapEmbedUrl(input: string | null | undefined): string | null {
+  if (!input) return null;
+  const value = input.trim();
+  if (!value) return null;
+  // Pasted full <iframe ... src="https://www.google.com/maps/embed?pb=...">
+  const iframeMatch = value.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  if (iframeMatch && /\/maps\/embed\?pb=/i.test(iframeMatch[1])) {
+    return iframeMatch[1];
   }
-  const query = encodeURIComponent(address ?? "Perth WA 6000");
-  return `https://www.google.com/maps?q=${query}&output=embed`;
+  // Raw embed URL pasted directly.
+  if (/\/maps\/embed\?pb=/i.test(value)) {
+    return value;
+  }
+  return null;
 }
 
 function directionsUrl(address: string | null): string {
@@ -167,44 +166,51 @@ export default async function ContactPage() {
             <h2 className="font-display text-3xl tracking-wider text-center mb-8">
               Find <span className="brand-gradient-text">Our Office</span>
             </h2>
-            {settings?.mapEmbedUrl ? (
-              // Admin has pasted a Google Maps embed/share URL — render the iframe.
-              <div className="rounded-2xl overflow-hidden border border-white/8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
-                <iframe
-                  title="G-Unit Security office on Google Maps"
-                  src={resolveMapEmbedUrl(settings.mapEmbedUrl, settings.address ?? null)}
-                  width="100%"
-                  height="420"
-                  style={{
-                    border: 0,
-                    filter: "invert(92%) hue-rotate(180deg) brightness(0.95) contrast(1.1)",
-                  }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            ) : (
-              // No embed URL set — avoid the unreliable q=…&output=embed fallback
-              // (Google now serves a broken-iframe response for many of these).
-              // Show a clean address card with a one-click 'open in Maps' instead.
-              <a
-                href={directionsUrl(settings?.address ?? null)}
-                target="_blank"
-                rel="noreferrer"
-                className="block rounded-2xl border border-white/8 bg-navy-rich hover:border-red-primary/40 transition p-12 text-center shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-primary/20 to-blue-primary/20 border border-navy-light flex items-center justify-center mx-auto mb-5">
-                  <MapPin className="w-6 h-6 text-red-bright" />
-                </div>
-                <p className="font-display text-2xl tracking-wider mb-2">
-                  {settings?.address ?? "Perth, WA"}
-                </p>
-                <p className="text-gold-bright text-xs tracking-[3px] uppercase">
-                  Open in Google Maps →
-                </p>
-              </a>
-            )}
+            {(() => {
+              // Only render the iframe when admin has pasted the real Google
+              // Maps embed URL (the only form that works without API key).
+              // Everything else — share links, search URLs, normal map URLs
+              // — would produce Google's broken-iframe response, so we fall
+              // through to the clean address card instead.
+              const embedSrc = resolveMapEmbedUrl(settings?.mapEmbedUrl);
+              if (embedSrc) {
+                return (
+                  <div className="rounded-2xl overflow-hidden border border-white/8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+                    <iframe
+                      title="G-Unit Security office on Google Maps"
+                      src={embedSrc}
+                      width="100%"
+                      height="420"
+                      style={{
+                        border: 0,
+                        filter: "invert(92%) hue-rotate(180deg) brightness(0.95) contrast(1.1)",
+                      }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                );
+              }
+              return (
+                <a
+                  href={directionsUrl(settings?.address ?? null)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block rounded-2xl border border-white/8 bg-navy-rich hover:border-red-primary/40 transition p-12 text-center shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-primary/20 to-blue-primary/20 border border-navy-light flex items-center justify-center mx-auto mb-5">
+                    <MapPin className="w-6 h-6 text-red-bright" />
+                  </div>
+                  <p className="font-display text-2xl tracking-wider mb-2">
+                    {settings?.address ?? "Perth, WA"}
+                  </p>
+                  <p className="text-gold-bright text-xs tracking-[3px] uppercase">
+                    Open in Google Maps →
+                  </p>
+                </a>
+              );
+            })()}
             <p className="text-center text-gray-mid text-sm mt-4">
               {settings?.address ?? "Perth, WA"} ·{" "}
               <a
