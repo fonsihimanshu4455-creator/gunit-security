@@ -191,7 +191,7 @@ export default async function BlogPage() {
               </a>
             </article>
 
-            <article className="card-luxury rounded-2xl p-6 md:p-8">
+            <article className="card-luxury rounded-2xl p-6 md:p-8 flex flex-col">
               <header className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-blue-primary flex items-center justify-center">
                   <Facebook className="w-5 h-5 text-white" />
@@ -210,19 +210,34 @@ export default async function BlogPage() {
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </header>
-              <div className="aspect-square rounded-xl overflow-hidden border border-white/8 bg-pure-black">
-                <iframe
-                  title="Facebook page"
-                  src={`https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(
-                    fbUrl
-                  )}&tabs=timeline&width=400&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true`}
-                  className="w-full h-full"
-                  loading="lazy"
-                  scrolling="no"
-                  allowTransparency
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                />
-              </div>
+              {settings?.facebookUrl ? (
+                // Admin has set a real Facebook page URL — try the plugin embed.
+                <div className="aspect-square rounded-xl overflow-hidden border border-white/8 bg-pure-black">
+                  <iframe
+                    title="Facebook page"
+                    src={`https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(
+                      fbUrl
+                    )}&tabs=timeline&width=400&height=500&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true`}
+                    className="w-full h-full"
+                    loading="lazy"
+                    scrolling="no"
+                    allowTransparency
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  />
+                </div>
+              ) : (
+                // No FB URL set — the plugin renders an empty black box for
+                // non-existent handles, so show a clean brand card instead.
+                <div className="aspect-square rounded-xl overflow-hidden border border-white/8 bg-gradient-to-br from-blue-primary/20 via-pure-black to-blue-royal/15 flex flex-col items-center justify-center p-8 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-primary flex items-center justify-center mb-5 shadow-[0_10px_30px_-10px_rgba(30,58,138,0.7)]">
+                    <Facebook className="w-7 h-7 text-white" />
+                  </div>
+                  <p className="font-display text-2xl tracking-wider mb-2">G-Unit Security</p>
+                  <p className="text-sm text-off-white/55 leading-relaxed">
+                    Stories from the field, event highlights, and team announcements.
+                  </p>
+                </div>
+              )}
               <a
                 href={fbUrl}
                 target="_blank"
