@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
 import { getSiteSettings, getPublishedServices } from "@/lib/site-data";
+import { mapClickUrl } from "@/lib/maps";
 
 const socialMap = [
   { icon: Facebook, key: "facebookUrl" as const, label: "Facebook" },
@@ -94,9 +95,16 @@ export async function Footer() {
             <h4 className="font-display text-lg tracking-wider mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
               {settings?.address && (
-                <li className="flex gap-3 text-gray-mid">
+                <li className="flex gap-3">
                   <MapPin className="w-4 h-4 mt-0.5 text-red-bright flex-shrink-0" />
-                  <span className="whitespace-pre-line">{settings.address}</span>
+                  <a
+                    href={mapClickUrl(settings)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="whitespace-pre-line text-gray-mid hover:text-off-white transition"
+                  >
+                    {settings.address}
+                  </a>
                 </li>
               )}
               {settings?.phone && (

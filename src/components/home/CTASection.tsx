@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import type { SiteSettings } from "@prisma/client";
+import { mapClickUrl } from "@/lib/maps";
 
 export function CTASection({ settings }: { settings: SiteSettings | null }) {
   return (
@@ -43,10 +44,15 @@ export function CTASection({ settings }: { settings: SiteSettings | null }) {
               </a>
             )}
             {settings?.address && (
-              <span className="inline-flex items-center gap-2">
+              <a
+                href={mapClickUrl(settings)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 hover:text-off-white transition"
+              >
                 <MapPin className="w-4 h-4 text-red-bright" />
                 {settings.address.split(",").slice(-2).join(",").trim() || "Perth, WA"}
-              </span>
+              </a>
             )}
           </div>
         </div>

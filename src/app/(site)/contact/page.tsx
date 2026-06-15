@@ -5,6 +5,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { QuoteCalculator } from "@/components/forms/QuoteCalculator";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
+import { directionsUrl, mapClickUrl, mapIframeSrc } from "@/lib/maps";
 
 export const metadata = buildMetadata({
   title: "Contact G-Unit Security Perth — 24/7 Emergency Response",
@@ -17,37 +18,6 @@ export const metadata = buildMetadata({
 // fast across the site without needing a redeploy.
 export const revalidate = 60;
 
-/**
- * The ONLY Google Maps URL form that reliably renders inside an iframe
- * without an API key is the one Maps produces via "Share → Embed a map":
- *   https://www.google.com/maps/embed?pb=...
- * Anything else — search URLs, /maps/place links, maps.app.goo.gl
- * shortlinks, q=&output=embed hacks — is now rejected by Google with a
- * broken-document iframe response. So we only return a real embed URL
- * when we're confident it will load; otherwise the caller falls back to
- * the clean address card.
- */
-function resolveMapEmbedUrl(input: string | null | undefined): string | null {
-  if (!input) return null;
-  const value = input.trim();
-  if (!value) return null;
-  // Pasted full <iframe ... src="https://www.google.com/maps/embed?pb=...">
-  const iframeMatch = value.match(/<iframe[^>]+src=["']([^"']+)["']/i);
-  if (iframeMatch && /\/maps\/embed\?pb=/i.test(iframeMatch[1])) {
-    return iframeMatch[1];
-  }
-  // Raw embed URL pasted directly.
-  if (/\/maps\/embed\?pb=/i.test(value)) {
-    return value;
-  }
-  return null;
-}
-
-function directionsUrl(address: string | null): string {
-  const query = encodeURIComponent(address ?? "Perth WA 6000");
-  return `https://www.google.com/maps/dir/?api=1&destination=${query}`;
-}
-
 export default async function ContactPage() {
   const settings = await getSiteSettings();
 
@@ -56,6 +26,8 @@ export default async function ContactPage() {
       icon: MapPin,
       label: "Head Office",
       value: settings?.address ?? "Perth CBD, WA",
+      href: mapClickUrl(settings),
+      external: true,
     },
     {
       icon: Phone,
@@ -113,7 +85,11 @@ export default async function ContactPage() {
                 </div>
               );
               return card.href ? (
-                <a key={card.label} href={card.href}>
+                <a
+                  key={card.label}
+                  href={card.href}
+                  {...(card.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                >
                   {content}
                 </a>
               ) : (
@@ -174,7 +150,7 @@ export default async function ContactPage() {
               // Everything else — share links, search URLs, normal map URLs
               // — would produce Google's broken-iframe response, so we fall
               // through to the clean address card instead.
-              const embedSrc = resolveMapEmbedUrl(settings?.mapEmbedUrl);
+              const embedSrc = mapIframeSrc(settings);
               if (embedSrc) {
                 return (
                   <div className="rounded-2xl overflow-hidden border border-white/8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
@@ -196,7 +172,7 @@ export default async function ContactPage() {
               }
               return (
                 <a
-                  href={directionsUrl(settings?.address ?? null)}
+                  href={mapClickUrl(settings)}
                   target="_blank"
                   rel="noreferrer"
                   className="block rounded-2xl border border-white/8 bg-navy-rich hover:border-red-primary/40 transition p-12 text-center shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]"
@@ -214,7 +190,15 @@ export default async function ContactPage() {
               );
             })()}
             <p className="text-center text-gray-mid text-sm mt-4">
-              {settings?.address ?? "Perth, WA"} ·{" "}
+              <a
+                href={mapClickUrl(settings)}
+                target="_blank"
+                rel="noreferrer"
+                className="text-gray-mid hover:text-off-white transition"
+              >
+                {settings?.address ?? "Perth, WA"}
+              </a>
+              {" · "}
               <a
                 href={directionsUrl(settings?.address ?? null)}
                 target="_blank"
