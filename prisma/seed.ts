@@ -45,29 +45,33 @@ async function main() {
   });
 
   // ─────────────────────────────────────────────────────────────────
-  // 2. Site settings (single row — upsert by first existing id)
+  // 2. Site settings (single row — create ONCE, never overwrite)
   // ─────────────────────────────────────────────────────────────────
-  const settingsData = {
-    companyName: "G-Unit Security",
-    tagline: "Your Security, Our Mission",
-    subtitle: "We Don't Mind 24/7 Communication",
-    description:
-      "G-Unit Security is a privately owned Western Australian company focused on delivering dependable, professional, and structured security solutions across Perth and its environs.",
-    phone: "0490 331 894",
-    email: "dario.m@gunitsecurity.com.au",
-    generalEmail: "info@gunitsecurity.com.au",
-    address: "36 Brisbane Street, Perth WA 6000",
-    hours: "24/7 Emergency Response",
-    website: "www.gunitsecurity.com.au",
-    established: "2024",
-    region: "Western Australia",
-    emergencyResponse: "24/7",
-  };
+  // CRITICAL: the seed must NEVER update an existing SiteSettings row.
+  // The admin panel is the source of truth for phone/email/address/
+  // social URLs/etc. — if we update here, every deploy would wipe out
+  // whatever the admin saved. We only create defaults on a brand-new
+  // database where no row exists yet.
   const existingSettings = await prisma.siteSettings.findFirst();
-  if (existingSettings) {
-    await prisma.siteSettings.update({ where: { id: existingSettings.id }, data: settingsData });
-  } else {
-    await prisma.siteSettings.create({ data: settingsData });
+  if (!existingSettings) {
+    await prisma.siteSettings.create({
+      data: {
+        companyName: "G-Unit Security",
+        tagline: "Your Security, Our Mission",
+        subtitle: "We Don't Mind 24/7 Communication",
+        description:
+          "G-Unit Security is a privately owned Western Australian company focused on delivering dependable, professional, and structured security solutions across Perth and its environs.",
+        phone: "+61 426 842 606",
+        email: "mandy.s@gunitsecurity.com.au",
+        generalEmail: "info@gunitsecurity.com.au",
+        address: "36 Brisbane Street, Perth WA 6000",
+        hours: "24/7 Emergency Response",
+        website: "www.gunitsecurity.com.au",
+        established: "2022",
+        region: "Western Australia",
+        emergencyResponse: "24/7",
+      },
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -475,133 +479,68 @@ async function main() {
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // 9. Testimonials — keep existing seed data (idempotent)
+  // 9. Testimonials — seed ONCE on empty table, never overwrite.
   // ─────────────────────────────────────────────────────────────────
-  // Final order + copy from the legacy gunitsecurity.com.au testimonials.
-  const testimonials = [
-    {
-      name: "Aman Singh",
-      role: "Producer",
-      company: "YS Production",
-      quote:
-        "Very professional service. I will be using your services again for the next event.",
-      rating: 5,
-      order: 1,
-    },
-    {
-      name: "Mark Reynolds",
-      role: "Operations Manager",
-      quote:
-        "G-Unit Security were outstanding from start to finish. Their team was professional, calm, and highly reliable. We felt completely secure throughout our event.",
-      rating: 5,
-      order: 2,
-    },
-    {
-      name: "Sarah Collins",
-      role: "Property Manager",
-      quote:
-        "We engaged G-Unit Security for our retail premises and have been extremely impressed with their vigilance and reporting. Their presence has made a real difference.",
-      rating: 5,
-      order: 3,
-    },
-    {
-      name: "Daniel Thompson",
-      role: "Construction Project Lead",
-      quote:
-        "The team provided reliable and well-trained guards for our construction site. Communication was clear and the service was consistently professional.",
-      rating: 5,
-      order: 4,
-    },
-    {
-      name: "Emily Harper",
-      role: "Events & Hospitality Director",
-      quote:
-        "Exceptional professionalism and discretion. G-Unit Security handled our requirements flawlessly and exceeded expectations in every way.",
-      rating: 5,
-      order: 5,
-    },
-  ];
-  for (const testimonial of testimonials) {
-    const existing = await prisma.testimonial.findFirst({
-      where: { name: testimonial.name, role: testimonial.role },
-    });
-    if (!existing) {
-      await prisma.testimonial.create({ data: testimonial });
+  // CRITICAL: as with SiteSettings, the admin panel owns testimonial
+  // copy/order/rating. We only seed defaults when the table is empty
+  // (e.g. brand-new database). No updateMany — that would clobber any
+  // admin edits on every deploy.
+  if ((await prisma.testimonial.count()) === 0) {
+    const testimonials = [
+      {
+        name: "Aman Singh",
+        role: "Producer",
+        company: "YS Production",
+        quote:
+          "Very professional service. I will be using your services again for the next event.",
+        rating: 5,
+        order: 1,
+      },
+      {
+        name: "Mark Reynolds",
+        role: "Operations Manager",
+        quote:
+          "G-Unit Security were outstanding from start to finish. Their team was professional, calm, and highly reliable. We felt completely secure throughout our event.",
+        rating: 5,
+        order: 2,
+      },
+      {
+        name: "Sarah Collins",
+        role: "Property Manager",
+        quote:
+          "We engaged G-Unit Security for our retail premises and have been extremely impressed with their vigilance and reporting. Their presence has made a real difference.",
+        rating: 5,
+        order: 3,
+      },
+      {
+        name: "Daniel Thompson",
+        role: "Construction Project Lead",
+        quote:
+          "The team provided reliable and well-trained guards for our construction site. Communication was clear and the service was consistently professional.",
+        rating: 5,
+        order: 4,
+      },
+      {
+        name: "Emily Harper",
+        role: "Events & Hospitality Director",
+        quote:
+          "Exceptional professionalism and discretion. G-Unit Security handled our requirements flawlessly and exceeded expectations in every way.",
+        rating: 5,
+        order: 5,
+      },
+    ];
+    for (const t of testimonials) {
+      await prisma.testimonial.create({ data: t });
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // 10. One-time data migrations
-  // ─────────────────────────────────────────────────────────────────
-  // The first round of seed data didn't match the latest brief: Mandeep
-  // and Mandy are the same person (use Mandy), and Ali is the Event
-  // Manager (not Business Development). These migrations run on every
-  // deploy but are idempotent — once the data is in the new shape, the
-  // findFirst lookups return nothing and the updates skip.
-  // Importantly, they preserve any photoUrl an admin uploaded.
-
-  // Drop the standalone "Mandy" stub row if it still exists.
-  const mandyStub = await prisma.teamMember.findFirst({
-    where: { name: "Mandy", role: "Client Services Manager" },
-  });
-  if (mandyStub) {
-    await prisma.teamMember.delete({ where: { id: mandyStub.id } });
-  }
-
-  // Merge Mandeep Sehrawat into Mandy (keeps photoUrl, just changes
-  // name/role/bio/responsibilities).
-  const mandeepRow = await prisma.teamMember.findFirst({
-    where: { name: "Mandeep Sehrawat" },
-  });
-  if (mandeepRow) {
-    await prisma.teamMember.update({
-      where: { id: mandeepRow.id },
-      data: {
-        name: "Mandy",
-        role: "Operations Manager",
-        email: "mandy.s@gunitsecurity.com.au",
-        bio:
-          "Mandy ensures the smooth delivery of security services through strong supervision, planning, and operational control. She is also the primary point of contact for client services and relationship management.",
-        responsibilities: [
-          { title: "Operations Oversight", description: "Managing day-to-day operations for efficiency and quality." },
-          { title: "Team Leadership", description: "Leading and mentoring teams to deliver high performance." },
-          { title: "Client Services", description: "Primary point of contact for clients and ongoing relationship management." },
-        ],
-      },
-    });
-  }
-
-  // Revert Ali Shehzad's role to the original PDF capability statement copy:
-  // Business Development Director (he was briefly seeded as Event Manager;
-  // the brief now confirms the original title).
-  const aliRow = await prisma.teamMember.findFirst({
-    where: { name: "Ali Shehzad", role: "Event Manager" },
-  });
-  if (aliRow) {
-    await prisma.teamMember.update({
-      where: { id: aliRow.id },
-      data: {
-        role: "Business Development Director",
-        bio:
-          "Ali is responsible for business development, client relationships, and identifying opportunities that drive sustainable growth.",
-        responsibilities: [
-          { title: "Business Growth", description: "Identifying new opportunities and expanding client base." },
-          { title: "Relationship Building", description: "Fostering long-term partnerships built on trust." },
-          { title: "Market Insight", description: "Understanding client needs and delivering tailored solutions." },
-        ],
-      },
-    });
-  }
-
-  // Sync testimonial quote / order with the latest legacy-site copy.
-  // updateMany matches by name+role and is a no-op if there's no row, so this
-  // is safe to leave running on every deploy.
-  for (const t of testimonials) {
-    await prisma.testimonial.updateMany({
-      where: { name: t.name, role: t.role },
-      data: { quote: t.quote, order: t.order, rating: t.rating, company: t.company ?? null },
-    });
-  }
+  // Note: the historical "one-time data migrations" (Mandeep -> Mandy,
+  // Ali role correction, testimonial quote sync, etc.) have been removed
+  // because they were re-running on every deploy and silently overwriting
+  // admin edits to team members and testimonials. Those migrations have
+  // already done their job in production — once that state is in the DB,
+  // the admin owns it from here on. Future content changes go through the
+  // admin panel, never through this seed.
 
   console.log("Seed complete.");
   console.log(`Admin login: ${adminEmail} / (from DEFAULT_ADMIN_PASSWORD)`);
