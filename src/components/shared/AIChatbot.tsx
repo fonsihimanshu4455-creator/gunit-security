@@ -18,12 +18,12 @@ const ANSWERS: { keywords: string[]; reply: string }[] = [
   {
     keywords: ["price", "cost", "quote", "how much", "rate", "charge"],
     reply:
-      "Pricing depends on site type, hours, and number of officers. We can prepare a tailored quote within 24 hours — share your contact details on the Contact page or call 0490 331 894.",
+      "Pricing depends on site type, hours, and number of officers. We can prepare a tailored quote within 24 hours — share your contact details on the Contact page or call +61 426 842 606.",
   },
   {
     keywords: ["contact", "phone", "email", "address", "reach", "office"],
     reply:
-      "📞 0490 331 894\n📧 dario.m@gunitsecurity.com.au\n📍 36 Brisbane Street, Perth WA 6000",
+      "📞 +61 426 842 606\n📧 mandy.s@gunitsecurity.com.au\n📍 36 Brisbane Street, Perth WA 6000",
   },
   {
     keywords: ["hour", "open", "available", "24", "emergency"],
@@ -77,7 +77,7 @@ const ANSWERS: { keywords: string[]; reply: string }[] = [
 ];
 
 const FALLBACK =
-  "Thanks for your message. For a detailed answer please call 0490 331 894 or email dario.m@gunitsecurity.com.au — our team responds within 24 hours.";
+  "Thanks for your message. For a detailed answer please call +61 426 842 606 or email mandy.s@gunitsecurity.com.au — our team responds within 24 hours.";
 
 function answer(input: string): string {
   const text = input.toLowerCase();

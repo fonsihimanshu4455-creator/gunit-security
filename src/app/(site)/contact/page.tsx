@@ -9,7 +9,7 @@ import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Contact G-Unit Security Perth — 24/7 Emergency Response",
   description:
-    "Call +61 426 842 606 or email info@gunitsecurity.com.au. Head office in Mirrabooka, Western Australia. 24/7 emergency response, office hours Mon–Fri 9am–6pm.",
+    "Call +61 426 842 606 or email mandy.s@gunitsecurity.com.au. Head office in Perth, Western Australia. 24/7 emergency response, office hours Mon–Fri 9am–6pm.",
   path: "/contact",
 });
 
@@ -53,7 +53,7 @@ export default async function ContactPage() {
     {
       icon: MapPin,
       label: "Head Office",
-      value: settings?.address ?? "Mirrabooka, WA",
+      value: settings?.address ?? "Perth CBD, WA",
     },
     {
       icon: Phone,
@@ -64,7 +64,7 @@ export default async function ContactPage() {
     {
       icon: Mail,
       label: "Email",
-      value: settings?.email ?? "info@gunitsecurity.com.au",
+      value: settings?.email ?? "mandy.s@gunitsecurity.com.au",
       href: settings?.email ? `mailto:${settings.email}` : undefined,
     },
     {

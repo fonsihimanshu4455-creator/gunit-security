@@ -18,8 +18,10 @@ Project context for Claude Code. Read this before making changes so tone, design
 ## Contact Information (keep consistent on every page)
 
 - **Phone**: +61 426 842 606
-- **Email**: info@gunitsecurity.com.au
-- **Address**: PO BOX 254, Mirrabooka, WA 6941, Australia
+- **Primary Email**: mandy.s@gunitsecurity.com.au (Mandy — Operations Manager, primary point of contact)
+- **General Email**: info@gunitsecurity.com.au
+- **Head Office**: 36 Brisbane Street, Perth WA 6000 (Perth CBD)
+- **Postal**: PO BOX 254, Mirrabooka, WA 6941, Australia
 - **Hours**: 24/7 Emergency Response | Office Mon–Fri 9AM–6PM
 
 ## Key Credentials (Trust Signals)

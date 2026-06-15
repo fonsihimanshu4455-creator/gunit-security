@@ -66,7 +66,7 @@ export function buildMetadata({ title, description, path = "/", image }: PageMet
 
 export function organizationJsonLd(settings: SiteSettings | null) {
   const phone = settings?.phone ?? "+61 426 842 606";
-  const email = settings?.email ?? "info@gunitsecurity.com.au";
+  const email = settings?.email ?? "mandy.s@gunitsecurity.com.au";
   const logo = settings?.logoUrl
     ? settings.logoUrl.startsWith("http")
       ? settings.logoUrl
