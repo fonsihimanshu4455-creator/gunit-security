@@ -5,7 +5,7 @@ import { ApplicationForm } from "@/components/forms/ApplicationForm";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
-export const revalidate = 600;
+export const revalidate = 60;
 
 export const metadata = buildMetadata({
   title: "Security Careers in Perth — Join G-Unit Security",

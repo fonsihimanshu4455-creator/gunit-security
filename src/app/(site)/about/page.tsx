@@ -15,7 +15,7 @@ export const metadata = buildMetadata({
   path: "/about",
 });
 
-export const revalidate = 600;
+export const revalidate = 60;
 
 const stats = [
   { value: "Since 2022", label: "Established WA" },

@@ -13,7 +13,9 @@ export const metadata = buildMetadata({
   path: "/contact",
 });
 
-export const revalidate = 600;
+// Short cache window so admin edits to phone/email/address propagate
+// fast across the site without needing a redeploy.
+export const revalidate = 60;
 
 /**
  * The ONLY Google Maps URL form that reliably renders inside an iframe
