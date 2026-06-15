@@ -168,3 +168,27 @@ Ashtar, Luxus, Mazzucchellis, Motorplex, Savills, Carco, Brown Boys, Candy Stati
 - When adding new sections, reuse the existing color variables and fonts from `css/style.css`.
 - Inline SVGs only — don't pull in icon libraries.
 - Stay mobile-responsive at the three breakpoints.
+
+## CRITICAL — Admin panel is the source of truth
+
+**Before changing anything related to SiteSettings, Services, Industries,
+Testimonials, TeamMembers, HeroSlides, Partners, CoreValues, or BlogPosts:**
+
+1. **ASK the user first** what they've changed in Admin → Site Settings
+   (or other admin pages) since the last session. The user edits these
+   values directly through the admin UI; the DB row is the source of
+   truth, not this codebase.
+2. **Do NOT assume** the values from a previous session still match the
+   DB. The user routinely tweaks contact info, descriptions, social URLs,
+   etc. from admin between sessions.
+3. **NEVER** add seed-script `update()` calls for these tables. Seed must
+   only `create` when the row is missing — see `prisma/seed.ts` for the
+   correct pattern. Updating from seed silently wipes admin edits on
+   every Vercel deploy (this exact bug bit us once already).
+4. **The sandbox cannot reach Neon DB or the live site.** So I literally
+   can't read the current admin values from here. The only way I know
+   what's in the DB is by asking the user. Don't pretend otherwise.
+
+If unsure: ask "Have you changed anything in admin recently? What are
+the current phone / email / address / etc. values?" — then build on top
+of that, don't overwrite.
